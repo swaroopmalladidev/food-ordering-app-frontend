@@ -1,0 +1,59 @@
+
+.Input.clicked {
+    color:white;
+}
+
+.card-details {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.red {
+    color: red;
+} 
+
+.dispNone {
+    display: none;
+}
+
+.account-circle {     
+    color: ivory;
+    cursor: pointer;
+}
+
+.hr {
+    background-color: #f2f2f2;
+    height: 1.5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+    
+.dispBlock {
+    display: block;
+}
+
+.tabs-header {
+    margin-bottom: 20px;
+}
+
+.MuiInput-underline:after {
+    border-bottom: 2px solid white !important;
+}
+
+@media (max-width: 800px) {
+    .app-header {
+      flex-direction: column;
+      height: 122px;
+    }
+    .card-details {
+        flex-direction: column;
+    }
+}
+
+.app-header {    
+    padding: 8px 32px 8px 16px;
+    height: 36px;
+    display: flex;
+    background-color: rgb(67, 71, 68);
+}
