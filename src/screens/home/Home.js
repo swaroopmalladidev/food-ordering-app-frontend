@@ -18,7 +18,7 @@ class Home extends Component {
             message: null
         }
 
-      
+        this.getAllRestaurantData();
     }
 
     render() {
@@ -60,8 +60,58 @@ class Home extends Component {
         )
     }
 
+    /* The below method is used to get all the restaurant details and some particular restaurant details based on the search value. */
+    getAllRestaurantData = (value) => {
+        if (value == null || value === "") {
+            let that = this;
+            let url = `${constants.allrestaurantsUrl}`;
+            return fetch(url, {
+                method: 'GET',
+            }).then((response) => {
+                return response.json();
+            }).then((jsonResponse) => {
+                if (jsonResponse.restaurants === null) {
+                    this.setState({ message: "No restaurant found" })
+                }
+                if (jsonResponse.restaurants !== null) {
+                    this.setState({ message: null })
+                }
+                that.setState({
+                    allrestaurantsData: jsonResponse.restaurants,
+                    message: null
+                });
+            }).catch((error) => {
+                console.log('error restaurant data', error);
+            });
+        }
+        else {
+            let that = this;
+            let url = `${constants.findRestaurant}/${value}`;
+            return fetch(url, {
+                method: 'GET',
+            }).then((response) => {
+                return response.json();
+            }).then((jsonResponse) => {
+                if (jsonResponse.restaurants === null) {
+                    this.setState({ message: "No restaurant with the given name." })
+                }
+                if (jsonResponse.restaurants !== null) {
+                    this.setState({ message: null })
+                }
+                that.setState({
+                    allrestaurantsData: jsonResponse.restaurants
+                });
 
- 
+            }).catch((error) => {
+                console.log('error restaurant data', error);
+            });
+        }
+    }
+
+    /* The below method is used to navigate to restaurant details page on click of a restaurant. */
+    restaurantClickHandler = (restuaurantId) => {
+        this.props.history.push('/restaurant/' + restuaurantId);
+    }
 
 }
 

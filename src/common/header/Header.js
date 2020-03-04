@@ -19,10 +19,10 @@ import './Header.css';
 
 const customStyles = {
     content: {
-        bottom: 'auto',
-        top: '50%',
+        bottom: 'auto', 
+        top: '50%',        
         right: 'auto',
-        left: '50%',
+        left: '50%',             
         transform: 'translate(-50%, -50%)',
         marginRight: '-50%'
     }
@@ -42,7 +42,7 @@ class Header extends Component {
         super(props);
 
         this.state = {
-            modalIsOpen: false,
+            modalIsOpen: false,           
             message: null,
             search: "",
             value: 0,
@@ -57,30 +57,30 @@ class Header extends Component {
             phoneValid: "dispNone",
             loginErrordisp: "dispNone",
             signupErrordisp: "dispNone",
-            username: "",
-            loginPassword: "",
+            username: "",            
+            loginPassword: "",           
             firstname: "",
-            lastname: "",
-            email: "",
-            registerPassword: "",
+            lastname: "",            
+            email: "",            
+            registerPassword: "",            
             contact: "",
-            loginErrormessage: "",
+            loginErrormessage: "",            
             signupErrormessage: "",
             registrationSuccess: false,
             emailCheck: false,
-            passwordCheck: false,
-            phoneCheck: false,
-            snackOpen: false,
-            popoverOpen: false,
-            anchorEl: null,
+            passwordCheck: false,            
+            phoneCheck: false,            
+            snackOpen: false,            
+            popoverOpen: false,            
+            anchorEl: null,  
             loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
-            uuid: sessionStorage.getItem("access-token") == null ? null : sessionStorage.getItem("access-token"),
+            uuid: sessionStorage.getItem("access-token") == null ? null : sessionStorage.getItem("access-token"),   
             loginDisplay: sessionStorage.getItem("first_name") == null ? "LOGIN" : sessionStorage.getItem("first_name"),
             first_name: sessionStorage.getItem("first_name"),
             last_name: sessionStorage.getItem("last_name"),
             email_address: sessionStorage.getItem("email_address"),
             contact_number: sessionStorage.getItem("contact_number"),
-            snackMessage: "Registered successfully! Please login now!",
+            snackMessage: "Registered successfully! Please login now!", 
         }
 
     }
@@ -357,19 +357,19 @@ class Header extends Component {
     closeModalHandler = () => {
         this.setState({ modalIsOpen: false });
     }
-
-
+    
+   
     /* This method is used to set the state when the Password field gets changed. */
     inputLoginPasswordChangeHandler = (e) => {
         this.setState({ loginPassword: e.target.value });
     }
 
-    /* This method is used to set the state when the Contact field gets changed. */
-    inputUsernameChangeHandler = (e) => {
+     /* This method is used to set the state when the Contact field gets changed. */
+     inputUsernameChangeHandler = (e) => {
         this.setState({ username: e.target.value });
     }
 
-
+    
     /* This method is used to set the state when the First Name field gets changed. */
     inputFirstNameChangeHandler = (e) => {
         this.setState({ firstname: e.target.value });
@@ -385,7 +385,7 @@ class Header extends Component {
         this.setState({ email: e.target.value });
     }
 
-    /* This method is used to set the state when the Contact No. field gets changed. */
+    /* This method is used to set the state when the Contact No. field gets changed. */ 
     inputContactChangeHandler = (e) => {
         this.setState({ contact: e.target.value });
     }
@@ -394,7 +394,7 @@ class Header extends Component {
     inputRegisterPasswordChangeHandler = (e) => {
         this.setState({ registerPassword: e.target.value });
     }
-
+   
 
     /* This method is used to login an user by click the LOGIN button. */
     loginClickHandler = () => {
@@ -448,31 +448,93 @@ class Header extends Component {
         }
     }
 
+    
+ /* This method is used to handle the tab changes between Login and Signup. */
+ tabChangeHandler = (event, value) => {
+    this.setState({
+        value,
+        usernameRequired: "dispNone",
+        loginPasswordRequired: "dispNone",
+        firstnameRequired: "dispNone",
+        emailRequired: "dispNone",
+        registerPasswordRequired: "dispNone",
+        contactRequired: "dispNone",
+        emailValid: "dispNone",
+        passwordValid: "dispNone",
+        phoneValid: "dispNone",
+        username: "",        
+        loginPassword: "",        
+        firstname: "",
+        lastname: "",        
+        email: "",       
+        registerPassword: "",        
+        contact: "",       
+        emailCheck: false,
+        passwordCheck: false,        
+        phoneCheck: false,        
+    });
+}
 
-    /* This method is used to handle the tab changes between Login and Signup. */
-    tabChangeHandler = (event, value) => {
+    
+    handleSnackClose = () => {
+        this.setState({ snackOpen: false })
+    }
+
+   
+
+    /* This method is used to close the My Profile and Logout popovrs. */
+    handleClose = () => {
         this.setState({
-            value,
+            anchorEl: null,
+            popoverOpen: false
+        });
+    }
+ /* This method is used to open the Login and Signup. */
+ openModalHandler = event => {
+    if (this.state.loggedIn === false) {
+        this.setState({
+            modalIsOpen: true,
+            value: 0,
             usernameRequired: "dispNone",
             loginPasswordRequired: "dispNone",
             firstnameRequired: "dispNone",
             emailRequired: "dispNone",
             registerPasswordRequired: "dispNone",
             contactRequired: "dispNone",
-            emailValid: "dispNone",
-            passwordValid: "dispNone",
-            phoneValid: "dispNone",
-            username: "",
             loginPassword: "",
+            username: "",            
             firstname: "",
-            lastname: "",
-            email: "",
-            registerPassword: "",
-            contact: "",
-            emailCheck: false,
-            passwordCheck: false,
-            phoneCheck: false,
+            lastname: "",            
+            email: "",            
+            registerPassword: "",            
+            contact: ""
         });
+
+    }
+    if (this.state.loggedIn === true) {
+        this.setState({
+            anchorEl: event.currentTarget,
+            popoverOpen: true
+        });
+    }
+}
+    
+
+    /* This method is used to navigate to profile page. */
+    handleProfile = () => {
+        this.props.history.push('/profile');
+        this.handleClose();
+    }
+
+    /* This method is used to handle logout.*/
+    logoutHandler = () => {
+        sessionStorage.clear();
+        this.setState({
+            loggedIn: false,
+            loginDisplay: "LOGIN"
+        })
+        this.handleClose();
+        this.props.history.replace('/');
     }
 }
 
