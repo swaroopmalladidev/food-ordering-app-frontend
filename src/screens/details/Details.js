@@ -18,6 +18,31 @@ import Header from '../../common/header/Header';
 
 class Details extends Component {
 
+
+       /* This method is used to get the restaurant details based on UUID. */
+       getData = () => {
+        let that = this;
+        let myUrl = `${constants.restaurantUrl}/${this.props.match.params.id}`;
+        return fetch(myUrl, {
+            method: 'GET',
+        }).then((response) => {
+            return response.json();
+        }).then((jsonResponse) => {
+            that.setState({
+                restaurant_id: jsonResponse.id,
+                restaurant_picture: jsonResponse.photo_URL,
+                restaurant_name: jsonResponse.restaurant_name,
+                restaurant_locality: jsonResponse.address.locality,
+                restaurant_category: jsonResponse.categories,
+                restaurant_customer_rating: jsonResponse.customer_rating,
+                restaurant_number_customers_rated: jsonResponse.number_customers_rated,
+                restaurant_average_price: jsonResponse.average_price
+            });
+        }).catch((error) => {
+            console.log('error restaurant details data', error);
+        });
+    }
+
     constructor(props) {
         super(props);
         this.state = {
