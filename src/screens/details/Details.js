@@ -267,6 +267,48 @@ class Details extends Component {
      handleClose = () => {
         this.setState({ open: false })
     };
+
+    /* This method is used to decrease the count of an item. */
+    onItemRemoveClicked = (newItem) => {
+        let newItemList = this.state.state_items_list
+        let itemIndex = 0;
+        newItemList.forEach(function (subscriber, index) {
+            if (subscriber.name === newItem.name) {
+                itemIndex = index;
+            }
+        }, this);
+        let newItems = newItemList;
+        let cost = newItem.price / newItem.count
+        newItem.price = newItem.price - cost
+        newItem.count = newItem.count - 1
+        let newtotal = this.state.total - cost
+        if (newItem.count !== 0) {
+            newItems.splice(itemIndex, 1, newItem);
+        }
+        else {
+            newItems.splice(itemIndex, 1);
+        }
+        let newitem_count = this.state.item_count - 1
+        this.setState({ state_items_list: newItemList });
+        this.setState({
+            open: true,
+            total: newtotal,
+            item_count: newitem_count
+        })
+        if (newItem.count === 0) {
+            this.setState({
+                message: "Item removed from cart!",
+                open: true
+            })
+        }
+        else {
+            this.setState({
+                message: "",
+                open: false
+            })
+        }
+    }
+
  
 
 }
