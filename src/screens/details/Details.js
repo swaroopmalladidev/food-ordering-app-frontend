@@ -263,6 +263,10 @@ class Details extends Component {
         this.setState({ message: "Item added to cart!" })
     }
 
+     /* This method is used to close. */
+     handleClose = () => {
+        this.setState({ open: false })
+    };
  
 
 }
