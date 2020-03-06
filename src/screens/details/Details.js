@@ -187,6 +187,81 @@ class Details extends Component {
         )
     }
     
+     /* This method is used to increase the count of items. */
+     onItemAddClicked = (newItem) => {
+        let newItemList = this.state.state_items_list
+        let itemIndex = 0;
+        newItemList.forEach(function (item, index) {
+            if (item.name === newItem.name) {
+                itemIndex = index;
+            }
+        }, this);
+        let newItems = newItemList;
+        let cost = newItem.price / newItem.count
+        newItem.price = newItem.price + cost
+        newItem.count = newItem.count + 1
+        let newtotal = this.state.total + cost
+        newItems.splice(itemIndex, 1, newItem);
+        let newitem_count = this.state.item_count + 1
+        this.setState({ state_items_list: newItemList });
+        this.setState({
+            open: true,
+            total: newtotal,
+            item_count: newitem_count
+        })
+        this.setState({ message: "Item quantity increased by 1!" })
+    }
+
+    /* This method is used to add item to cart.*/
+    onAddClicked = (newItem) => {
+        let newItemList = this.state.state_items_list
+        let itemIndex = 0;
+        if (newItemList.length > 0) {
+            newItemList.forEach(function (item, index) {
+                if (item.name === newItem.item_name) {
+                    itemIndex = index;
+                }
+            }, this);
+        }
+        let itemNode = newItemList[itemIndex];
+        let newItems = newItemList;
+        let itemNodeNew = {}
+        if (itemNode !== undefined) {
+            if (itemNode.name === newItem.item_name) {
+                itemNodeNew.price = itemNode.price + newItem.price
+                itemNodeNew.count = itemNode.count + 1
+                itemNodeNew.name = itemNode.name
+                itemNodeNew.id = itemNode.id
+                itemNodeNew.item_type = itemNode.item_type
+                newItems.splice(itemIndex, 1, itemNodeNew);
+                let newitem_count = this.state.item_count + 1
+                let newtotal = this.state.total + newItem.price
+                this.setState({
+                    open: true,
+                    item_count: newitem_count,
+                    total: newtotal
+                })
+                this.setState({ message: "Item added to cart!" })
+                this.setState({ state_items_list: newItems });
+                return
+            }
+        }
+        itemNodeNew.price = newItem.price
+        itemNodeNew.name = newItem.item_name
+        itemNodeNew.count = 1
+        itemNodeNew.id = newItem.id
+        itemNodeNew.item_type = newItem.item_type
+        let newtotal = this.state.total + newItem.price
+        newItems.push(itemNodeNew)
+        let newitem_count = this.state.item_count + 1
+        this.setState({
+            state_items_list: newItems,
+            total: newtotal,
+            item_count: newitem_count
+        });
+        this.setState({ open: true })
+        this.setState({ message: "Item added to cart!" })
+    }
 
  
 
