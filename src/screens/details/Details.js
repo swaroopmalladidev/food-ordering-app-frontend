@@ -180,6 +180,12 @@ class Details extends Component {
         )
     }
 
+      /* This method is used to navigate to checkout page.*/
+      onItemCheckoutClicked = () => {
+        this.props.history.push(
+            { pathname: '/checkout', state: { items_list_new: this.state.state_items_list, total: this.state.total, restaurant_id: this.state.restaurant_id, restaurant_name: this.state.restaurant_name } }
+        )
+    }
     
 
  
