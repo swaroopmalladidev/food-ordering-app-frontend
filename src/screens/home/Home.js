@@ -60,7 +60,13 @@ class Home extends Component {
         )
     }
 
-    /* The below method is used to get all the restaurant details and some particular restaurant details based on the search value. */
+
+    /* This method is used to navigate to restaurant details page. */
+    restaurantClickHandler = (restuaurantId) => {
+        this.props.history.push('/restaurant/' + restuaurantId);
+    }
+
+    /* This method is used to get all the restaurant details based on the search value. */
     getAllRestaurantData = (value) => {
         if (value == null || value === "") {
             let that = this;
@@ -70,10 +76,13 @@ class Home extends Component {
             }).then((response) => {
                 return response.json();
             }).then((jsonResponse) => {
-                if (jsonResponse.restaurants === null) {
+                console.log(jsonResponse.restaurants);
+                console.log(jsonResponse.restaurants.length);
+
+                if (jsonResponse.restaurants.length === 0) {
                     this.setState({ message: "No restaurant found" })
                 }
-                if (jsonResponse.restaurants !== null) {
+                if (jsonResponse.restaurants.length !== 0) {
                     this.setState({ message: null })
                 }
                 that.setState({
@@ -92,10 +101,12 @@ class Home extends Component {
             }).then((response) => {
                 return response.json();
             }).then((jsonResponse) => {
-                if (jsonResponse.restaurants === null) {
+                console.log(jsonResponse.restaurants);
+                console.log(jsonResponse.restaurants.length);
+                if (jsonResponse.restaurants.length === 0) {
                     this.setState({ message: "No restaurant with the given name." })
                 }
-                if (jsonResponse.restaurants !== null) {
+                if (jsonResponse.restaurants.length !== 0) {
                     this.setState({ message: null })
                 }
                 that.setState({
@@ -108,13 +119,5 @@ class Home extends Component {
         }
     }
 
-    /* The below method is used to navigate to restaurant details page on click of a restaurant. */
-    restaurantClickHandler = (restuaurantId) => {
-        this.props.history.push('/restaurant/' + restuaurantId);
-    }
-
 }
-
-
-
 export default Home;
