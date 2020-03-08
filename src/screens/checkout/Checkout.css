@@ -1,0 +1,62 @@
+.gridListNew {    
+    transform: translateZ(0);
+    flex-wrap: nowrap;
+}
+
+.gridListAddresses {
+    display:flex;    
+    justify-content: space-around;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+.gridTile:hover {
+    border:outset;    
+    box-shadow:unset;
+    border-color:green;
+}
+
+.gridTile {
+     border:none;
+     
+}
+
+.main-div {
+    overflow: hidden;
+    display: flex;    
+    width: 100%;
+    flex-wrap: wrap;
+    
+}
+
+.tickIcon {
+    color: none;
+}
+
+.tickIcon:active {
+    color: green;
+}
+
+.tickIcon:hover {
+    color: green;
+}
+
+.dispBlock {
+    display: block;
+}
+
+.dispNone {
+    display: none;
+}
+
+.tabs {
+    
+    color: white;
+    background-color: #3f51b5;
+}
+
+@media (max-width: 800px) {
+    .main-div {
+        flex-direction: column;
+    }
+}

@@ -18,9 +18,28 @@ import Header from '../../common/header/Header';
 
 class Details extends Component {
 
-
-       /* This method is used to get the restaurant details based on UUID. */
-       getData = () => {
+    constructor(props) {
+        super(props);
+        this.state = {
+            restaurant_picture: null,
+            restaurant_name: null,
+            restaurant_locality: null,
+            restaurant_category: [],
+            restaurant_customer_rating: "",
+            restaurant_number_customers_rated: null,
+            restaurant_average_price: null,
+            item_count: 0,
+            state_items_list: [],
+            found: false,
+            open: false,
+            message: "",
+            total: 0
+        }
+        this.getData();
+        // this.state.item_count = 0;
+    }
+    /* This method is used to get the restaurant details based on UUID. */
+    getData = () => {
         let that = this;
         let myUrl = `${constants.restaurantUrl}/${this.props.match.params.id}`;
         return fetch(myUrl, {
@@ -42,27 +61,6 @@ class Details extends Component {
             console.log('error restaurant details data', error);
         });
     }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            restaurant_picture: null,
-            restaurant_name: null,
-            restaurant_locality: null,
-            restaurant_category: [],
-            restaurant_customer_rating: "",
-            restaurant_number_customers_rated: null,
-            restaurant_average_price: null,
-            item_count: 0,
-            state_items_list: [],
-            found: false,
-            open: false,
-            message: "",
-            total: 0
-        }
-        this.getData();
-    }
-    
 
 
     render() {
@@ -180,15 +178,38 @@ class Details extends Component {
         )
     }
 
-      /* This method is used to navigate to checkout page.*/
-      onItemCheckoutClicked = () => {
-        this.props.history.push(
-            { pathname: '/checkout', state: { items_list_new: this.state.state_items_list, total: this.state.total, restaurant_id: this.state.restaurant_id, restaurant_name: this.state.restaurant_name } }
-        )
+    /* This method is used to navigate to checkout page.*/
+    onItemCheckoutClicked = () => {
+             if (this.state.state_items_list.length === 0) {         
+            this.setState({
+                open: true
+            })
+            this.setState({ message: "Please add an item to your cart!" })
+        } else {
+            // Check for Customer logged in or not ....
+            var token = sessionStorage.getItem('access-token');
+            console.log('token');
+            console.log(token);
+            if (token === null || token === "") {
+                this.setState({
+                    open: true
+
+                })
+                this.setState({ message: "Please login first!" })
+            }
+            else {
+                this.props.history.push(
+                    { pathname: '/checkout', state: { items_list_new: this.state.state_items_list, total: this.state.total, restaurant_id: this.state.restaurant_id, restaurant_name: this.state.restaurant_name } }
+                )
+            }
+        }
+
+
+
     }
-    
-     /* This method is used to increase the count of items. */
-     onItemAddClicked = (newItem) => {
+
+    /* This method is used to increase the count of items. */
+    onItemAddClicked = (newItem) => {
         let newItemList = this.state.state_items_list
         let itemIndex = 0;
         newItemList.forEach(function (item, index) {
@@ -263,8 +284,8 @@ class Details extends Component {
         this.setState({ message: "Item added to cart!" })
     }
 
-     /* This method is used to close. */
-     handleClose = () => {
+    /* This method is used to close. */
+    handleClose = () => {
         this.setState({ open: false })
     };
 
@@ -308,8 +329,6 @@ class Details extends Component {
             })
         }
     }
-
- 
 
 }
 
