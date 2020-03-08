@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 import Header from '../../common/header/Header';
 
 
+
 class Details extends Component {
 
     constructor(props) {
@@ -38,7 +39,9 @@ class Details extends Component {
             message: "",
             total: 0
         }
-        this.getData();        
+
+        this.getData();
+
         // this.state.item_count = 0;
     }
     /* This method is used to get the restaurant details based on UUID. */
@@ -192,7 +195,9 @@ class Details extends Component {
 
     /* This method is used to navigate to checkout page.*/
     onItemCheckoutClicked = () => {
+
         if (this.state.state_items_list.length === 0) {
+
             this.setState({
                 open: true
             })

@@ -313,6 +313,7 @@ class Checkout extends Component {
             });
 
             let url = `${constants.saveAddressUrl}`;
+
             xhrSaveAddress.open("POST", url);
             xhrSaveAddress.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("access-token"));
             xhrSaveAddress.setRequestHeader("Content-Type", "application/json");
@@ -650,6 +651,7 @@ class Checkout extends Component {
                                             <span style={{ align: 'left', width: "11%" }}>{it.count}</span>
 
                                             <span style={{ align: 'left', width: "33%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{it.price}</span>
+
                                         </div>
 
                                     ))}
@@ -666,20 +668,26 @@ class Checkout extends Component {
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button className={classes.button} variant="contained" onClick={() => this.applyCouponCodeClickHandler()}>APPLY</Button>
                                         {this.state.percent > 0 && <div>
+
                                             <div>Sub Total <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
                                             <div>Discount <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
+
+                                      
                                         </div>
                                         }
                                     </span>
                                 </div>
                                 <br />
-                                {/* &#x20b9; */}
+
                                 <Divider variant="middle" />
                                 <div className="item-details">
                                     <Divider variant="middle" />
                                     <span style={{ align: 'left', width: "40%" }}><b>Net Amount</b></span>
+
                                     <span style={{ align: 'right', width: "40%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;
 <b>{this.state.newTotal}</b></span>
+
+
                                 </div>,
                                 <div className="item-details">
                                     <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onPlaceOrderClickHandler()} color="primary">PLACE ORDER</Button>

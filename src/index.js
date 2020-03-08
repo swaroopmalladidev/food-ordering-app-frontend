@@ -4,12 +4,6 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Controller from './screens/Controller';
 
-/*ReactDOM.render(
-    <div>
-        Food Ordering App
-    </div>,
-    document.getElementById('root')
-);*/
 
 ReactDOM.render(<Controller />, document.getElementById('root'));
 
