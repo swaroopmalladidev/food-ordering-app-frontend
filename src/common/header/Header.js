@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { constants } from '../Apiurls';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import SearchIcon from '@material-ui/icons/Search';
@@ -15,14 +16,17 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import Snackbar from '@material-ui/core/Snackbar';
 import MenuItem from "@material-ui/core/MenuItem";
 import Popover from "@material-ui/core/Popover";
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import './Header.css';
+
 
 const customStyles = {
     content: {
-        bottom: 'auto', 
-        top: '50%',        
+        bottom: 'auto',
+        top: '50%',
         right: 'auto',
-        left: '50%',             
+        left: '50%',
         transform: 'translate(-50%, -50%)',
         marginRight: '-50%'
     }
@@ -40,9 +44,8 @@ class Header extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-            modalIsOpen: false,           
+            modalIsOpen: false,
             message: null,
             search: "",
             value: 0,
@@ -57,30 +60,32 @@ class Header extends Component {
             phoneValid: "dispNone",
             loginErrordisp: "dispNone",
             signupErrordisp: "dispNone",
-            username: "",            
-            loginPassword: "",           
+            username: "",
+            loginPassword: "",
             firstname: "",
-            lastname: "",            
-            email: "",            
-            registerPassword: "",            
+            lastname: "",
+            email: "",
+            registerPassword: "",
             contact: "",
-            loginErrormessage: "",            
+            loginErrormessage: "",
             signupErrormessage: "",
             registrationSuccess: false,
             emailCheck: false,
-            passwordCheck: false,            
-            phoneCheck: false,            
-            snackOpen: false,            
-            popoverOpen: false,            
-            anchorEl: null,  
+            passwordCheck: false,
+            phoneCheck: false,
+            showSnackbar: false,
+            popoverOpen: false,
+            anchorEl: null,
             loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
-            uuid: sessionStorage.getItem("access-token") == null ? null : sessionStorage.getItem("access-token"),   
+            uuid: sessionStorage.getItem("access-token") == null ? null : sessionStorage.getItem("access-token"),
             loginDisplay: sessionStorage.getItem("first_name") == null ? "LOGIN" : sessionStorage.getItem("first_name"),
             first_name: sessionStorage.getItem("first_name"),
             last_name: sessionStorage.getItem("last_name"),
             email_address: sessionStorage.getItem("email_address"),
             contact_number: sessionStorage.getItem("contact_number"),
-            snackMessage: "Registered successfully! Please login now!", 
+            // snackMessage: "Registered successfully! Please login now!",
+            // successMessage: "Logged in Successfully",
+            snackBarMsg: '',
         }
 
     }
@@ -97,12 +102,12 @@ class Header extends Component {
                         <SearchIcon style={{ color: "white", verticalAlign: "middle" }}>
                         </SearchIcon>
                         <Input id="search" name="search"
-                            style={{ width: "220px", color: "white" }} type="text"
+                            style={{ width: "55%", color: "white" }} type="text"
                             placeholder="Search by Restaurant Name" onChange={this.searchChangeHandler}>
                         </Input>
                     </span>)}
                     {screen !== "Home" && (<span style={{ width: "33%" }}></span>)}
-                    <span style={{ width: "33%", textAlign: "right" }}>
+                    <span style={{ width: "17%", textAlign: "right" }}>
                         {this.state.loggedIn === false && <Button variant="contained" onClick={this.openModalHandler} color="white">
                             <AccountCircleIcon></AccountCircleIcon>
                             {this.state.loginDisplay}
@@ -110,7 +115,6 @@ class Header extends Component {
                         {this.state.loggedIn === true &&
                             <span style={{ verticalAlign: "middle" }}>
                                 <AccountCircleIcon className="account-circle" onClick={this.openModalHandler}>
-
                                 </AccountCircleIcon><span style={{ verticalAlign: "super", color: "white" }}>&nbsp;&nbsp;{this.state.loginDisplay}</span>
                                 <Popover
                                     id="popover1"
@@ -241,10 +245,21 @@ class Header extends Component {
                         vertical: 'bottom',
                         horizontal: 'left',
                     }}
-                    open={this.state.snackOpen} message={this.state.snackMessage}
-                    autoHideDuration={6000}
-                    onClose={this.handleSnackClose}>
-                </Snackbar>
+                    open={this.state.showSnackbar}
+                    autoHideDuration={30000}
+                    onClose={this.handleClose}
+                    TransitionComponent={this.state.transition}
+                    message={this.state.snackBarMsg}
+                    action={
+                        /**
+                         * Show close button to close the snackbar if the user wishes to
+                         */
+                        <React.Fragment>
+                            <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleClose}>
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </React.Fragment>
+                    } />
             </div>
         )
 
@@ -326,7 +341,8 @@ class Header extends Component {
                         that.setState({
                             registrationSuccess: true,
                             value: 0,
-                            snackOpen: true
+                            showSnackbar: true,
+                            snackBarMsg: 'Registered successfully! Please login now!'
                         });
                     }
 
@@ -357,19 +373,19 @@ class Header extends Component {
     closeModalHandler = () => {
         this.setState({ modalIsOpen: false });
     }
-    
-   
+
+
     /* This method is used to set the state when the Password field gets changed. */
     inputLoginPasswordChangeHandler = (e) => {
         this.setState({ loginPassword: e.target.value });
     }
 
-     /* This method is used to set the state when the Contact field gets changed. */
-     inputUsernameChangeHandler = (e) => {
+    /* This method is used to set the state when the Contact field gets changed. */
+    inputUsernameChangeHandler = (e) => {
         this.setState({ username: e.target.value });
     }
 
-    
+
     /* This method is used to set the state when the First Name field gets changed. */
     inputFirstNameChangeHandler = (e) => {
         this.setState({ firstname: e.target.value });
@@ -385,7 +401,7 @@ class Header extends Component {
         this.setState({ email: e.target.value });
     }
 
-    /* This method is used to set the state when the Contact No. field gets changed. */ 
+    /* This method is used to set the state when the Contact No. field gets changed. */
     inputContactChangeHandler = (e) => {
         this.setState({ contact: e.target.value });
     }
@@ -394,17 +410,22 @@ class Header extends Component {
     inputRegisterPasswordChangeHandler = (e) => {
         this.setState({ registerPassword: e.target.value });
     }
-   
+
 
     /* This method is used to login an user by click the LOGIN button. */
     loginClickHandler = () => {
         this.state.username === "" ? this.setState({ usernameRequired: "dispBlock" }) : this.setState({ usernameRequired: "dispNone" });
         this.state.loginPassword === "" ? this.setState({ loginPasswordRequired: "dispBlock" }) : this.setState({ loginPasswordRequired: "dispNone" });
-
         if (this.state.username !== "" && this.state.loginPassword !== "") {
             let dataLogin = null;
             let xhrLogin = new XMLHttpRequest();
             let that = this;
+            let loginUrl = `${constants.loginUrl}`;
+            xhrLogin.open("POST", loginUrl);
+            xhrLogin.setRequestHeader("authorization", "Basic " + window.btoa(this.state.username + ":" + this.state.loginPassword));
+            xhrLogin.setRequestHeader("Content-Type", "application/json");
+            xhrLogin.setRequestHeader("Cache-Control", "no-cache");
+            xhrLogin.send(dataLogin);
             xhrLogin.addEventListener("readystatechange", function () {
                 if (this.readyState === 4 && this.status === 200) {
                     sessionStorage.setItem("uuid", JSON.parse(this.responseText).id);
@@ -420,11 +441,15 @@ class Header extends Component {
                         first_name: sessionStorage.getItem("first_name"),
                         last_name: sessionStorage.getItem("last_name"),
                         email_address: sessionStorage.getItem("email_address"),
-                        contact_number: sessionStorage.getItem("contact_number")
-                    });
+                        contact_number: sessionStorage.getItem("contact_number"),
+                        showSnackbar: true,
+                        snackBarMsg: 'Logged in successfully!'
 
+                    });
                     that.closeModalHandler();
+                    that.onDetailsLoad();
                 }
+
                 if (this.readyState === 4 && this.status === 401) {
                     that.setState({
                         loginErrordisp: "dispBlock",
@@ -439,86 +464,101 @@ class Header extends Component {
                 }
             });
 
-            let loginUrl = `${constants.loginUrl}`;
-            xhrLogin.open("POST", loginUrl);
-            xhrLogin.setRequestHeader("authorization", "Basic " + window.btoa(this.state.username + ":" + this.state.loginPassword));
-            xhrLogin.setRequestHeader("Content-Type", "application/json");
-            xhrLogin.setRequestHeader("Cache-Control", "no-cache");
-            xhrLogin.send(dataLogin);
+
         }
     }
 
-    
- /* This method is used to handle the tab changes between Login and Signup. */
- tabChangeHandler = (event, value) => {
-    this.setState({
-        value,
-        usernameRequired: "dispNone",
-        loginPasswordRequired: "dispNone",
-        firstnameRequired: "dispNone",
-        emailRequired: "dispNone",
-        registerPasswordRequired: "dispNone",
-        contactRequired: "dispNone",
-        emailValid: "dispNone",
-        passwordValid: "dispNone",
-        phoneValid: "dispNone",
-        username: "",        
-        loginPassword: "",        
-        firstname: "",
-        lastname: "",        
-        email: "",       
-        registerPassword: "",        
-        contact: "",       
-        emailCheck: false,
-        passwordCheck: false,        
-        phoneCheck: false,        
-    });
-}
 
-    
-    handleSnackClose = () => {
-        this.setState({ snackOpen: false })
+    onDetailsLoad = () => {
+        var token = sessionStorage.getItem('access-token');
+        console.log('token');
+        console.log(token);
+        if (token !== null || token !== "") {
+            this.setState({
+                open: true
+
+            })
+
+            this.setState({ message: "login Success!" })
+        }
     }
 
-   
 
-    /* This method is used to close the My Profile and Logout popovrs. */
-    handleClose = () => {
+
+    /* This method is used to handle the tab changes between Login and Signup. */
+    tabChangeHandler = (event, value) => {
         this.setState({
-            anchorEl: null,
-            popoverOpen: false
-        });
-    }
- /* This method is used to open the Login and Signup. */
- openModalHandler = event => {
-    if (this.state.loggedIn === false) {
-        this.setState({
-            modalIsOpen: true,
-            value: 0,
+            value,
             usernameRequired: "dispNone",
             loginPasswordRequired: "dispNone",
             firstnameRequired: "dispNone",
             emailRequired: "dispNone",
             registerPasswordRequired: "dispNone",
             contactRequired: "dispNone",
+            emailValid: "dispNone",
+            passwordValid: "dispNone",
+            phoneValid: "dispNone",
+            username: "",
             loginPassword: "",
-            username: "",            
             firstname: "",
-            lastname: "",            
-            email: "",            
-            registerPassword: "",            
-            contact: ""
+            lastname: "",
+            email: "",
+            registerPassword: "",
+            contact: "",
+            emailCheck: false,
+            passwordCheck: false,
+            phoneCheck: false,
+            loginErrormessage: "",
+            signupErrormessage: "",
         });
+    }
 
+
+    handleSnackClose = () => {
+
+        this.setState({ showSnackbar: false, snackBarMsg: '' });
     }
-    if (this.state.loggedIn === true) {
+
+
+
+    /* This method is used to close the My Profile and Logout popovrs. */
+    handleClose = () => {
         this.setState({
-            anchorEl: event.currentTarget,
-            popoverOpen: true
+            anchorEl: null,
+            popoverOpen: false,
+            showSnackbar: false
         });
     }
-}
-    
+    /* This method is used to open the Login and Signup. */
+    openModalHandler = event => {
+        if (this.state.loggedIn === false) {
+            this.setState({
+                modalIsOpen: true,
+                value: 0,
+                usernameRequired: "dispNone",
+                loginPasswordRequired: "dispNone",
+                firstnameRequired: "dispNone",
+                emailRequired: "dispNone",
+                registerPasswordRequired: "dispNone",
+                contactRequired: "dispNone",
+                loginPassword: "",
+                username: "",
+                firstname: "",
+                lastname: "",
+                email: "",
+                registerPassword: "",
+                contact: ""
+            });
+
+        }
+        if (this.state.loggedIn === true) {
+            this.setState({
+                anchorEl: event.currentTarget,
+                popoverOpen: true
+            });
+        }
+    }
+
 
     /* This method is used to navigate to profile page. */
     handleProfile = () => {
