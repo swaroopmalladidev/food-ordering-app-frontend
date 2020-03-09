@@ -3,3 +3,6 @@
     justify-content: flex-start;
     flex-wrap: wrap;
 }
+.MuiCardContent-root {
+    padding: 0px !important;
+}

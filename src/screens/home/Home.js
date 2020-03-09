@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import './Home.css';
 import { constants } from '../../common/Apiurls';
 import Header from '../../common/header/Header';
-import StarIcon from '@material-ui/icons/Star';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 
 class Home extends Component {
     constructor(props) {
@@ -38,14 +40,17 @@ class Home extends Component {
                                         <img
                                             style={{ height: '150px', width: '100%', align: 'left' }}
                                             src={restaurant.photo_URL} alt="restaurant_picture"></img>
-                                        <div style={{ fontSize: "18px" }}>{restaurant.restaurant_name}</div>
-                                        <div>{restaurant.categories}</div>
-                                        <div className="card-details">
-                                            <span style={{ width: "45%", height: "40px", backgroundColor: "orange", align: 'left', color: "white" }}>
-                                                <StarIcon></StarIcon>&nbsp;&nbsp;{restaurant.customer_rating}&nbsp;&nbsp;({restaurant.number_customers_rated})
+                                            </div>
+                                            <div style={{padding: "5%"}}>
+                                        <div style={{ fontSize: "18px", paddingBottom:"6%" }}><b>{restaurant.restaurant_name}</b></div>
+                                        <div style={{ paddingBottom:"6%"}}>{restaurant.categories}</div>
+                                        <div className="card-details" >
+                                            <span style={{ padding: "10px", backgroundColor: "#eaea1f", align: "center", color: "white" }}>
+                                                <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>&nbsp;&nbsp;{restaurant.customer_rating}&nbsp;&nbsp;({restaurant.number_customers_rated})
                                         </span>
-                                            <span style={{ width: "45%", align: 'right' }}>
-                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&#x20b9; {restaurant.average_price} for two
+                                            {/* {{ width: "45%", align: 'right' }} */}
+                                            <span style={{ paddingTop: "10px", paddingLeft: "15%" }}>
+                                                <FontAwesomeIcon icon={faRupeeSign}></FontAwesomeIcon> {restaurant.average_price} for two
                                         </span>
                                         </div>
                                     </div>
@@ -56,7 +61,7 @@ class Home extends Component {
                     }
                 </div>
                 <div>{this.state.message}</div>
-            </div>
+            </div >
         )
     }
 

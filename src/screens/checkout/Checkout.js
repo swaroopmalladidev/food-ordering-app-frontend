@@ -32,6 +32,7 @@ import Divider from '@material-ui/core/Divider';
 import Header from '../../common/header/Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -317,7 +318,6 @@ class Checkout extends Component {
             xhrSaveAddress.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("access-token"));
             xhrSaveAddress.setRequestHeader("Content-Type", "application/json");
             xhrSaveAddress.setRequestHeader("Cache-Control", "no-cache");
-
             xhrSaveAddress.send(saveAddressData);
         }
     }
@@ -650,7 +650,8 @@ class Checkout extends Component {
 
                                             <span style={{ align: 'left', width: "11%" }}>{it.count}</span>
 
-                                            <span style={{ align: 'left', width: "33%" }}><span style={{ color: "grey" }}><b>&#x20b9;</b></span>&nbsp;{it.price}</span>
+                                            <span style={{ align: 'left', width: "33%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{it.price}</span>
+
                                         </div>
 
                                     ))}
@@ -667,20 +668,26 @@ class Checkout extends Component {
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button className={classes.button} variant="contained" onClick={() => this.applyCouponCodeClickHandler()}>APPLY</Button>
                                         {this.state.percent > 0 && <div>
-                                            <div>Sub Total &#x20b9;&nbsp;{this.state.subTotal}</div>
-                                            <div>Discount &#x20b9;&nbsp;{this.state.discount}</div>
 
+                                            <div>Sub Total <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
+                                            <div>Discount <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
+
+                                      
                                         </div>
                                         }
                                     </span>
                                 </div>
                                 <br />
+
                                 <Divider variant="middle" />
                                 <div className="item-details">
                                     <Divider variant="middle" />
                                     <span style={{ align: 'left', width: "40%" }}><b>Net Amount</b></span>
-                                    <span style={{ align: 'right', width: "40%" }}><b><span style={{ color: "grey" }}>&#x20b9;</span>&nbsp;
-{this.state.newTotal}</b></span>
+
+                                    <span style={{ align: 'right', width: "40%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;
+<b>{this.state.newTotal}</b></span>
+
+
                                 </div>,
                                 <div className="item-details">
                                     <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onPlaceOrderClickHandler()} color="primary">PLACE ORDER</Button>

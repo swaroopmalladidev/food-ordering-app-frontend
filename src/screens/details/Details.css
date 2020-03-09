@@ -6,7 +6,7 @@
 
 .left-details {
     width: 30%;    
-    padding: 20px;
+    /* padding: 20px; */
     text-align: left;
 }
   
@@ -48,3 +48,4 @@
 .MuiBadge-anchorOriginTopRightRectangle.MuiBadge-invisible {
     transform : scale(1) translate(50%, -50%) !important;
 }
+

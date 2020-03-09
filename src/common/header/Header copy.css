@@ -1,52 +1,40 @@
+
 .Input.clicked {
-    color: white;
+    color:white;
 }
 
-.app-header {
-    background-color: #243237;
+.card-details {
     display: flex;
-    align-items: center;
-    height: 36px;
-    padding: 8px 16px 8px 8px;
-    justify-content: space-between;  
-}
-
-.card-details {    
     justify-content: flex-start;
-    display: flex;
     flex-wrap: wrap;
-}
-
-.dispNone {
-    display: none;
-}
-
-
-.tabs-header {
-    margin-bottom: 20px;
 }
 
 .red {
     color: red;
 } 
 
+.dispNone {
+    display: none;
+}
 
+.account-circle {     
+    color: ivory;
+    cursor: pointer;
+}
+
+.hr {
+    background-color: #f2f2f2;
+    height: 1.5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+    
 .dispBlock {
     display: block;
 }
 
-
-.account-circle {
-    cursor: pointer;
-    color: ivory;
-}
-
-.hr {   
-    background-color: #f2f2f2;
-    height: 1.5px;
-    margin-right: 5px;
-    margin-left: 5px;
-    
+.tabs-header {
+    margin-bottom: 20px;
 }
 
 .MuiInput-underline:after {
@@ -61,4 +49,11 @@
     .card-details {
         flex-direction: column;
     }
+}
+
+.app-header {    
+    padding: 8px 32px 8px 16px;
+    height: 36px;
+    display: flex;
+    background-color: rgb(67, 71, 68);
 }
