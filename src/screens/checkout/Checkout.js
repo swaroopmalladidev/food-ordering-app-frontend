@@ -688,7 +688,7 @@ class Checkout extends Component {
 <b>{this.state.newTotal}</b></span>
 
 
-                                </div>,
+                                </div>
                                 <div className="item-details">
                                     <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onPlaceOrderClickHandler()} color="primary">PLACE ORDER</Button>
                                 </div>
