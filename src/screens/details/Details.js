@@ -94,9 +94,9 @@ class Details extends Component {
                         <br />
                         <div className="restaurant-details">
                             <span><div><FontAwesomeIcon icon={faStar} ></FontAwesomeIcon>&nbsp;&nbsp;<b>{ Number.parseFloat(this.state.restaurant_customer_rating).toFixed(1)}</b></div>
-                                <div>AVERGAE RATING BY {this.state.restaurant_number_customers_rated} CUSTOMERS</div></span>
-                            <span><div><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>{this.state.restaurant_number_customers_rated}</div>
-                                <div>AVERAGE COST FOR TWO PEOPLE</div></span></div>
+                                <div style={{ fontWeight: 'lighter', fontSize:'13px'}}>AVERGAE RATING BY<br/>{this.state.restaurant_number_customers_rated} CUSTOMERS</div></span>
+                            <span><div><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon> {this.state.restaurant_number_customers_rated}</div>
+                                <div style={{ fontWeight: 'lighter', fontSize:'13px'}}>AVERAGE COST FOR <br/>TWO PEOPLE</div></span></div>
                     </div>
                 </div>
 
