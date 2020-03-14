@@ -45,7 +45,7 @@ class Home extends Component {
                                         <div style={{ fontSize: "18px", paddingBottom:"6%" }}><b>{restaurant.restaurant_name}</b></div>
                                         <div style={{ paddingBottom:"6%"}}>{restaurant.categories}</div>
                                         <div className="card-details" >
-                                            <span style={{ padding: "10px", backgroundColor: "#eaea1f", align: "center", color: "white" }}>
+                                            <span style={{ padding: "10px", backgroundColor: "#EACC5E", align: "center", color: "white" }}>
                                                 <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>&nbsp;&nbsp;{restaurant.customer_rating}&nbsp;&nbsp;({restaurant.number_customers_rated})
                                         </span>
                                             {/* {{ width: "45%", align: 'right' }} */}

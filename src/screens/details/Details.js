@@ -82,8 +82,10 @@ class Details extends Component {
                             alt="restaurant_logo" />
                     </div>
                     <div className="right-details">
-                        <div><b>{this.state.restaurant_name}</b></div>
+                        <div style={{ fontSize: '30px', fontWeight: 'bold' }}>{this.state.restaurant_name}</div>
+                        <br/>
                         <div style={{ textTransform: "uppercase" }}>{this.state.restaurant_locality}</div>
+                        <br/>
                         <div>
                             {this.state.restaurant_category.map(cat => (
                                 <span>{cat.category_name + ", "}</span>
@@ -92,9 +94,9 @@ class Details extends Component {
                         <br />
                         <div className="restaurant-details">
                             <span><div><FontAwesomeIcon icon={faStar} ></FontAwesomeIcon>&nbsp;&nbsp;<b>{ Number.parseFloat(this.state.restaurant_customer_rating).toFixed(1)}</b></div>
-                                <div>AVERGAE RATING BY {this.state.restaurant_number_customers_rated} CUSTOMERS</div></span>
-                            <span><div><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>{this.state.restaurant_number_customers_rated}</div>
-                                <div>AVERAGE COST FOR TWO PEOPLE</div></span></div>
+                                <div style={{ fontWeight: 'lighter', fontSize:'13px'}}>AVERGAE RATING BY<br/>{this.state.restaurant_number_customers_rated} CUSTOMERS</div></span>
+                            <span><div><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon> {this.state.restaurant_number_customers_rated}</div>
+                                <div style={{ fontWeight: 'lighter', fontSize:'13px'}}>AVERAGE COST FOR <br/>TWO PEOPLE</div></span></div>
                     </div>
                 </div>
 
@@ -140,13 +142,13 @@ class Details extends Component {
                                 <div className="item-details" >
                                     <Badge badgeContent={this.state.item_count} color="primary">
                                         <ShoppingCartIcon ></ShoppingCartIcon>
-                                    </Badge><span style={{ paddingLeft: "7%",width: "10%",paddingBottom: "2.5%" }}><b>My Cart</b></span>
+                                    </Badge><span style={{ paddingLeft: "7%",width: "10%",paddingBottom: "2.5%", fontSize:'17px' }}><b>My Cart</b></span>
                                 </div>
                                 <div>
                                     {this.state.state_items_list.map(it => (
                                         <div className="item-details" key={it.id} >
                                             <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faStopCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faStopCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
-                                            <span style={{ align: 'left', width: "53%" }}>{it.name}</span>
+                                            <span style={{ align: 'left', width: "53%", color: "grey" }}>{it.name}</span>
                                             <span style={{ align: 'left', width: "4%" }}>
                                                 <RemoveIcon style={{ cursor: "pointer" }} onClick={() => this.onItemRemoveClicked(it)}></RemoveIcon>
                                             </span>
@@ -154,12 +156,12 @@ class Details extends Component {
                                             <span style={{ align: 'left', width: "14%" }}>
                                                 <AddIcon style={{ cursor: "pointer" }} onClick={() => this.onItemAddClicked(it)}></AddIcon>
                                             </span>
-                                            <span style={{ align: 'left', width: "13%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;  { Number.parseFloat(it.price).toFixed(2)}</span>
+                                            <span style={{ align: 'left', width: "13%", color: "grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;  { Number.parseFloat(it.price).toFixed(2)}</span>
                                         </div>
                                     ))}
                                 </div>
                                 <div className="item-details" style={{ paddingTop:"2.5%", paddingBottom:"2.5%"}} >
-                                    <span style={{ align: 'left', width: "64%" }}><b>TOTAL AMOUNT</b></span>
+                                    <span style={{ align: 'left', width: "64%", fontSize:'15px' }}><b>TOTAL AMOUNT</b></span>
                                     <span style={{  align: 'left', width: "25%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon><b>&nbsp;&nbsp; { Number.parseFloat(this.state.total).toFixed(2)}</b></span>
                                 </div>
                                 <div className="item-details">
