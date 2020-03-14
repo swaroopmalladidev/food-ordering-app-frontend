@@ -637,20 +637,22 @@ class Checkout extends Component {
                         )
                         }
                     </div>
+                    
                     <div style={{ width: '39%' }}>
                         <Card className="cardStyle">
                             <CardContent>
-                                <div style={{ marginBottom: '10px' }}><b>Summary</b></div>
-                                <div style={{ marginBottom: '10px' }}>{this.props.location.state.restaurant_name}</div>
+                                <br/>
+                                <div style={{ marginBottom: '10px', fontSize: '30px' }}><b>Summary</b></div><br />
+                                <div style={{ marginBottom: '10px' }}>{this.props.location.state.restaurant_name}</div><br />
                                 <div style={{ marginBottom: '20px' }}>
                                     {this.props.location.state.items_list_new.map(it => (
                                         <div className="item-details" key={it.name}>
                                             <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
-                                            <span style={{ align: 'left', width: "33%" }}>{it.name}</span>
+                                            <span style={{ align: 'left', width: "33%", color:"grey" }}>{it.name}</span>
 
-                                            <span style={{ align: 'left', width: "11%" }}>{it.count}</span>
+                                            <span style={{ align: 'left', width: "11%", color:"grey" }}>{it.count}</span>
 
-                                            <span style={{ align: 'left', width: "33%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{it.price}</span>
+                                            <span style={{ align: 'left', width: "33%", color:"grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{it.price}</span>
 
                                         </div>
 
@@ -672,7 +674,7 @@ class Checkout extends Component {
                                             <div>Sub Total <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
                                             <div>Discount <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
 
-                                      
+
                                         </div>
                                         }
                                     </span>
@@ -682,12 +684,11 @@ class Checkout extends Component {
                                 <Divider variant="middle" />
                                 <div className="item-details">
                                     <Divider variant="middle" />
+                                    <br />
                                     <span style={{ align: 'left', width: "40%" }}><b>Net Amount</b></span>
-
+                                    <br />
                                     <span style={{ align: 'right', width: "40%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;
-<b>{this.state.newTotal}</b></span>
-
-
+                                    <b>{this.state.newTotal}</b></span><br />
                                 </div>
                                 <div className="item-details">
                                     <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onPlaceOrderClickHandler()} color="primary">PLACE ORDER</Button>
