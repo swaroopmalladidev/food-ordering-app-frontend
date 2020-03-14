@@ -82,8 +82,10 @@ class Details extends Component {
                             alt="restaurant_logo" />
                     </div>
                     <div className="right-details">
-                        <div style={{ fontSize: '30px' }}><b>{this.state.restaurant_name}</b></div>
+                        <div style={{ fontSize: '30px', fontWeight: 'bold' }}>{this.state.restaurant_name}</div>
+                        <br/>
                         <div style={{ textTransform: "uppercase" }}>{this.state.restaurant_locality}</div>
+                        <br/>
                         <div>
                             {this.state.restaurant_category.map(cat => (
                                 <span>{cat.category_name + ", "}</span>
