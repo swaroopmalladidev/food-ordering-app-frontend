@@ -17,6 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Button from '@material-ui/core/Button';
 import Header from '../../common/header/Header';
+import { titleCase } from "title-case";
 
 
 
@@ -83,9 +84,9 @@ class Details extends Component {
                     </div>
                     <div className="right-details">
                         <div style={{ fontSize: '30px', fontWeight: 'bold' }}>{this.state.restaurant_name}</div>
-                        <br/>
+                        <br />
                         <div style={{ textTransform: "uppercase" }}>{this.state.restaurant_locality}</div>
-                        <br/>
+                        <br />
                         <div>
                             {this.state.restaurant_category.map(cat => (
                                 <span>{cat.category_name + ", "}</span>
@@ -93,10 +94,10 @@ class Details extends Component {
                         </div>
                         <br />
                         <div className="restaurant-details">
-                            <span><div><FontAwesomeIcon icon={faStar} ></FontAwesomeIcon>&nbsp;&nbsp;<b>{ Number.parseFloat(this.state.restaurant_customer_rating).toFixed(1)}</b></div>
-                                <div style={{ fontWeight: 'lighter', fontSize:'13px'}}>AVERGAE RATING BY<br/>{this.state.restaurant_number_customers_rated} CUSTOMERS</div></span>
+                            <span><div><FontAwesomeIcon icon={faStar} ></FontAwesomeIcon>&nbsp;&nbsp;<b>{Number.parseFloat(this.state.restaurant_customer_rating).toFixed(1)}</b></div>
+                                <div style={{ fontWeight: 'lighter', fontSize: '13px' }}>AVERGAE RATING BY<br />{this.state.restaurant_number_customers_rated} CUSTOMERS</div></span>
                             <span><div><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon> {this.state.restaurant_number_customers_rated}</div>
-                                <div style={{ fontWeight: 'lighter', fontSize:'13px'}}>AVERAGE COST FOR <br/>TWO PEOPLE</div></span></div>
+                                <div style={{ fontWeight: 'lighter', fontSize: '13px' }}>AVERAGE COST FOR <br />TWO PEOPLE</div></span></div>
                     </div>
                 </div>
 
@@ -110,22 +111,19 @@ class Details extends Component {
                                     <div className="item-details">
                                         {item.item_type === "NON_VEG" && <span id="non_veg" style={{ float: "left", width: "75%" }}>
                                             <FontAwesomeIcon icon={faCircle} style={{ color: "red" }}></FontAwesomeIcon>
-                                            &nbsp;    {item.item_name}
+                                            &nbsp;    {titleCase(item.item_name)}
                                         </span>}
                                         {item.item_type === "VEG" && <span id="veg" style={{ float: "left", width: "75%" }}>
                                             <FontAwesomeIcon icon={faCircle} style={{ color: "green" }}></FontAwesomeIcon>
-                                            &nbsp;    {item.item_name}
+                                            &nbsp;    {titleCase(item.item_name)}
                                         </span>}
-                                        {/* <span style={{ float: "left", width: "25%" }}>
-                                          
-                                        </span> */}
                                         <span style={{ float: "left", width: "15%" }}>
-                                        <FontAwesomeIcon icon={faRupeeSign}  ></FontAwesomeIcon>
-                                       
-                                        &nbsp; { Number.parseFloat(item.price).toFixed(2)}
+                                            <FontAwesomeIcon icon={faRupeeSign}  ></FontAwesomeIcon>
+
+                                            &nbsp; {Number.parseFloat(item.price).toFixed(2)}
                                         </span>
                                         <span style={{ float: "right", width: "10%" }}>
-                                            <AddIcon style={{ cursor: "pointer" }} onClick={() => this.onAddClicked(item)}></AddIcon>
+                                            <AddIcon style={{ cursor: "pointer"}} onClick={() => this.onAddClicked(item)}></AddIcon>
                                         </span>
                                     </div>
                                 ))}
@@ -136,37 +134,37 @@ class Details extends Component {
                     <div className="items-right-details" >
                         <Card className="cardStyle">
                             <CardContent>
-                                <div style={{padding: "16px"}}>
-                                    
-                                
-                                <div className="item-details" >
-                                    <Badge badgeContent={this.state.item_count} color="primary">
-                                        <ShoppingCartIcon ></ShoppingCartIcon>
-                                    </Badge><span style={{ paddingLeft: "7%",width: "10%",paddingBottom: "2.5%", fontSize:'17px' }}><b>My Cart</b></span>
-                                </div>
-                                <div>
-                                    {this.state.state_items_list.map(it => (
-                                        <div className="item-details" key={it.id} >
-                                            <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faStopCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faStopCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
-                                            <span style={{ align: 'left', width: "53%", color: "grey" }}>{it.name}</span>
-                                            <span style={{ align: 'left', width: "4%" }}>
-                                                <RemoveIcon style={{ cursor: "pointer" }} onClick={() => this.onItemRemoveClicked(it)}></RemoveIcon>
-                                            </span>
-                                            <span style={{ align: 'left', width: "2%" }}>{it.count}</span>
-                                            <span style={{ align: 'left', width: "14%" }}>
-                                                <AddIcon style={{ cursor: "pointer" }} onClick={() => this.onItemAddClicked(it)}></AddIcon>
-                                            </span>
-                                            <span style={{ align: 'left', width: "13%", color: "grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;  { Number.parseFloat(it.price).toFixed(2)}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="item-details" style={{ paddingTop:"2.5%", paddingBottom:"2.5%"}} >
-                                    <span style={{ align: 'left', width: "64%", fontSize:'15px' }}><b>TOTAL AMOUNT</b></span>
-                                    <span style={{  align: 'left', width: "25%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon><b>&nbsp;&nbsp; { Number.parseFloat(this.state.total).toFixed(2)}</b></span>
-                                </div>
-                                <div className="item-details">
-                                    <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onItemCheckoutClicked()} color="primary">CHECKOUT</Button>
-                                </div>
+                                <div style={{ padding: "16px" }}>
+
+
+                                    <div className="item-details" >
+                                        <Badge badgeContent={this.state.item_count} color="primary">
+                                            <ShoppingCartIcon ></ShoppingCartIcon>
+                                        </Badge><span style={{ paddingLeft: "7%", width: "10%", paddingBottom: "2.5%", fontSize: '17px' }}><b>My Cart</b></span>
+                                    </div>
+                                    <div>
+                                        {this.state.state_items_list.map(it => (
+                                            <div className="item-details" key={it.id} >
+                                                <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faStopCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faStopCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
+                                                <span style={{ align: 'left', width: "53%", color: "grey" }}>{titleCase(it.name)}</span>
+                                                <span style={{ align: 'left', width: "4%" }}>
+                                                    <RemoveIcon style={{ cursor: "pointer" }} onClick={() => this.onItemRemoveClicked(it)}></RemoveIcon>
+                                                </span>
+                                                <span style={{ align: 'left', width: "2%" }}>{it.count}</span>
+                                                <span style={{ align: 'left', width: "14%" }}>
+                                                    <AddIcon style={{ cursor: "pointer" }} onClick={() => this.onItemAddClicked(it)}></AddIcon>
+                                                </span>
+                                                <span style={{ align: 'left', width: "13%", color: "grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;  {Number.parseFloat(it.price).toFixed(2)}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="item-details" style={{ paddingTop: "2.5%", paddingBottom: "2.5%" }} >
+                                        <span style={{ align: 'left', width: "64%", fontSize: '15px' }}><b>TOTAL AMOUNT</b></span>
+                                        <span style={{ align: 'left', width: "25%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon><b>&nbsp;&nbsp; {Number.parseFloat(this.state.total).toFixed(2)}</b></span>
+                                    </div>
+                                    <div className="item-details">
+                                        <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onItemCheckoutClicked()} color="primary">CHECKOUT</Button>
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>

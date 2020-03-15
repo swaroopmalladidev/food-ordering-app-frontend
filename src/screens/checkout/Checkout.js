@@ -35,6 +35,7 @@ import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
 import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
+import { titleCase } from "title-case";
 // import { fontWeight } from '@material-ui/system';
 
 
@@ -649,7 +650,7 @@ class Checkout extends Component {
                                     {this.props.location.state.items_list_new.map(it => (
                                         <div className="item-details" key={it.name}>
                                             <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faStopCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faStopCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
-                                            <span style={{ align: 'left', width: "33%", color: "grey" }}>{it.name}</span>
+                                            <span style={{ align: 'left', width: "33%", color: "grey" }}>{titleCase(it.name)}</span>
 
                                             <span style={{ align: 'left', width: "11%", color: "grey" }}>{it.count}</span>
 
@@ -661,7 +662,7 @@ class Checkout extends Component {
                                 <div style={{ marginBottom: '20px', padding: '2%' }}>
                                     <span>
                                         <FormControl style={{ backgroundColor: 'rgb(241, 231, 211)' }}>
-                                            <InputLabel htmlFor="Coupon" style={{ padding: '3%' }}>Coupon Code</InputLabel>
+                                            <InputLabel htmlFor="Coupon" style={{ padding: '2%'}}>Coupon Code</InputLabel>
                                             <Input id="couponcode" type="text" couponcode={this.state.couponcode} onChange={this.inputcouponcodeChangeHandler} />
                                             <FormHelperText className={this.state.couponError}>
                                                 <span className="red">required</span>
