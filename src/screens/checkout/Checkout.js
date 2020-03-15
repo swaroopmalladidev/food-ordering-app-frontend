@@ -31,7 +31,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import Header from '../../common/header/Header';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
 import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
@@ -462,8 +462,8 @@ class Checkout extends Component {
             }).then((jsonResponse) => {
                 if (jsonResponse.percent === null || jsonResponse.percent === "") {
                     this.setState({
-                        snackMessage: "No coupon with the given name",
                         snackOpen: true,
+                        snackMessage: "No coupon with the given name",
                         newTotal: this.props.location.state.total,
                         subTotal: this.props.location.state.total,
                         discount: 0
@@ -472,8 +472,8 @@ class Checkout extends Component {
                 }
                 if (jsonResponse.percent !== null || jsonResponse.percent !== "") {
                     this.setState({
-                        snackMessage: "",
                         snackOpen: false,
+                        snackMessage: "",
                         percent: jsonResponse.percent,
                         coupon_id: jsonResponse.id
                     })
@@ -637,42 +637,41 @@ class Checkout extends Component {
                         )
                         }
                     </div>
-                    
+
                     <div style={{ width: '39%' }}>
                         <Card className="cardStyle">
                             <CardContent>
-                                <br/>
-                                <div style={{ marginBottom: '10px', fontSize: '30px' }}><b>Summary</b></div><br />
-                                <div style={{ marginBottom: '10px' }}>{this.props.location.state.restaurant_name}</div><br />
-                                <div style={{ marginBottom: '20px' }}>
+                                <br />
+                                <div style={{ marginBottom: '10px', fontSize: '30px', padding: '2%' }}><b>Summary</b></div><br />
+                                <div style={{ marginBottom: '10px', fontSize: '20px', padding: '2%' }}>{this.props.location.state.restaurant_name}</div><br />
+                                <div style={{ marginBottom: '20px', padding: '2%', lineHeight: '1.5' }}>
                                     {this.props.location.state.items_list_new.map(it => (
                                         <div className="item-details" key={it.name}>
-                                            <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
-                                            <span style={{ align: 'left', width: "33%", color:"grey" }}>{it.name}</span>
+                                            <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faStopCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faStopCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
+                                            <span style={{ align: 'left', width: "33%", color: "grey" }}>{it.name}</span>
 
-                                            <span style={{ align: 'left', width: "11%", color:"grey" }}>{it.count}</span>
+                                            <span style={{ align: 'left', width: "11%", color: "grey" }}>{it.count}</span>
 
-                                            <span style={{ align: 'left', width: "33%", color:"grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{it.price}</span>
-
+                                            <span style={{ align: 'left', width: "33%", color: "grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{it.price}</span>
                                         </div>
 
                                     ))}
                                 </div>
-                                <div>
+                                <div style={{ marginBottom: '20px', padding: '2%' }}>
                                     <span>
-                                        <FormControl style={{ backgroundColor: 'rgb(241, 231, 211)' }}>
-                                            <InputLabel htmlFor="Coupon">Coupon Code</InputLabel>
+                                        <FormControl style={{ backgroundColor: 'rgb(241, 231, 211)'}}>
+                                            <InputLabel htmlFor="Coupon" style={{padding:'3%'}}>Coupon Code</InputLabel>
                                             <Input id="couponCode" type="text" couponCode={this.state.couponCode} onChange={this.inputCouponCodeChangeHandler} />
                                             <FormHelperText className={this.state.couponError}>
                                                 <span className="red">required</span>
                                             </FormHelperText>
                                         </FormControl>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Button className={classes.button} variant="contained" onClick={() => this.applyCouponCodeClickHandler()}>APPLY</Button>
-                                        {this.state.percent > 0 && <div>
-
-                                            <div>Sub Total <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
-                                            <div>Discount <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
+                                    <Button className={classes.button} variant="contained" onClick={() => this.applyCouponCodeClickHandler()}>APPLY</Button><br />
+                                        {this.state.percent > 0 && <div><br/>
+                                            <div>Sub Total  <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
+                                            <br />
+                                            <div>Discount  <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
 
 
                                         </div>
@@ -685,12 +684,12 @@ class Checkout extends Component {
                                 <div className="item-details">
                                     <Divider variant="middle" />
                                     <br />
-                                    <span style={{ align: 'left', width: "40%" }}><b>Net Amount</b></span>
+                                    <span style={{ align: 'left', width: "40%" }}><br /><b>Net Amount</b></span>
                                     <br />
-                                    <span style={{ align: 'right', width: "40%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;
-                                    <b>{this.state.newTotal}</b></span><br />
+                                    <span style={{ align: 'right', width: "40%" }}><br /><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;
+                                    {this.state.newTotal}</span><br />
                                 </div>
-                                <div className="item-details">
+                                <div className="item-details" style={{ marginBottom: '20px', padding: '2%' }}>
                                     <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onPlaceOrderClickHandler()} color="primary">PLACE ORDER</Button>
                                 </div>
 
