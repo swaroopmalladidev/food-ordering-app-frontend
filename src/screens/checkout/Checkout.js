@@ -35,6 +35,7 @@ import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
 import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
+import { fontWeight } from '@material-ui/system';
 
 
 const useStyles = makeStyles(theme => ({
@@ -628,8 +629,8 @@ class Checkout extends Component {
                         </Stepper>
                         {finished && (
                             <Paper square elevation={0} className={classes.resetContainer}>
-                                <Typography><b> View the summary & place your order now!</b></Typography>
-                                <Button onClick={this.handleReset} className={classes.button}>
+                                <Typography style={{padding:'2%'}}><b> View the summary & place your order now!</b></Typography>
+                                <Button style={{padding:'2%'}} onClick={this.handleReset} className={classes.button}>
                                     CHANGE
           </Button>
                             </Paper>
@@ -638,7 +639,7 @@ class Checkout extends Component {
                         }
                     </div>
 
-                    <div style={{ width: '39%' }}>
+                    <div style={{ width: '39%', marginTop: '20px', marginRight: '5px', marginBottom: '10px' }}>
                         <Card className="cardStyle">
                             <CardContent>
                                 <br />
@@ -669,9 +670,9 @@ class Checkout extends Component {
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <Button className={classes.button} variant="contained" onClick={() => this.applyCouponCodeClickHandler()}>APPLY</Button><br />
                                         {this.state.percent > 0 && <div><br/>
-                                            <div>Sub Total  <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
+                                            <div>Sub Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
                                             <br />
-                                            <div>Discount  <FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
+                                            <div>Discount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
 
 
                                         </div>
