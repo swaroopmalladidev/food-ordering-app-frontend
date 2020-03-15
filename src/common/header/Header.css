@@ -2,6 +2,7 @@
     color: white;
 }
 
+/** Styling for Application Header*/
 .app-header {
     background-color: #243237;
     display: flex;
@@ -11,6 +12,7 @@
     justify-content: space-between;  
 }
 
+/** Styling for Restaurant Cards*/
 .card-details {    
     justify-content: flex-start;
     display: flex;
@@ -26,6 +28,7 @@
     margin-bottom: 20px;
 }
 
+/** Styling for Error color*/
 .red {
     color: red;
 } 

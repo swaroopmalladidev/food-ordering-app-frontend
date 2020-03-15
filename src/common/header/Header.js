@@ -108,7 +108,7 @@ class Header extends Component {
                     </span>)}
                     {screen !== "Home" && (<span style={{ width: "33%" }}></span>)}
                     <span style={{ width: "17%", textAlign: "right" }}>
-                        {this.state.loggedIn === false && <Button variant="contained" onClick={this.openModalHandler} color="white">
+                        {this.state.loggedIn === false && <Button variant="contained" onClick={this.openModalHandler} color="default">
                             <AccountCircleIcon></AccountCircleIcon>
                             {this.state.loginDisplay}
                         </Button>}
