@@ -639,7 +639,7 @@ class Checkout extends Component {
                         }
                     </div>
 
-                    <div style={{ width: '39%' }}>
+                    <div style={{ width: '39%', marginTop: '20px', marginRight: '5px', marginBottom: '10px' }}>
                         <Card className="cardStyle">
                             <CardContent>
                                 <br />
