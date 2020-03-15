@@ -35,7 +35,7 @@ import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
 import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
-import { fontWeight } from '@material-ui/system';
+// import { fontWeight } from '@material-ui/system';
 
 
 const useStyles = makeStyles(theme => ({
@@ -93,7 +93,7 @@ class Checkout extends Component {
         this.state = {
             modalIsOpen: false,
             value: 0,
-            flatNoRequired: "dispNone",
+            flatnoRequired: "dispNone",
             statesListRequired: "dispNone",
             localityRequired: "dispNone",
             cityRequired: "dispNone",
@@ -101,14 +101,14 @@ class Checkout extends Component {
             stateListRequired: "dispNone",
             couponError: "dispNone",
             pinValid: "dispNone",
-            flatNo: "",
+            flatno: "",
             statesList: [],
             state_uuid: "",
             locality: "",
             city: "",
             pincode: "",
             snackMessage: "",
-            couponCode: "",
+            couponcode: "",
             paymentMethods: [],
             addressList: [],
             message: "",
@@ -144,8 +144,8 @@ class Checkout extends Component {
     }
 
     /* This method is used to set the value on change of the Coupon field. */
-    inputCouponCodeChangeHandler = (e) => {
-        this.setState({ couponCode: e.target.value });
+    inputcouponcodeChangeHandler = (e) => {
+        this.setState({ couponcode: e.target.value });
     }
     /* This method is used to set the value on change of the City field. */
     inputCityChangeHandler = (e) => {
@@ -163,8 +163,8 @@ class Checkout extends Component {
     };
 
     /* This method is used to set the value on change of the Flat / Building No. */
-    inputFlatNoChangeHandler = (e) => {
-        this.setState({ flatNo: e.target.value });
+    inputflatnoChangeHandler = (e) => {
+        this.setState({ flatno: e.target.value });
     }
 
     /* This method is used to select an address from the ADDRESS tab. */
@@ -253,13 +253,13 @@ class Checkout extends Component {
 
     /* This method is used to save an address of the logged in user. */
     saveAddressClickHandler = () => {
-        this.state.flatNo === "" ? this.setState({ flatNoRequired: "dispBlock" }) : this.setState({ flatNoRequired: "dispNone" });
+        this.state.flatno === "" ? this.setState({ flatnoRequired: "dispBlock" }) : this.setState({ flatnoRequired: "dispNone" });
         this.state.locality === "" ? this.setState({ localityRequired: "dispBlock" }) : this.setState({ localityRequired: "dispNone" });
         this.state.city === "" ? this.setState({ cityRequired: "dispBlock" }) : this.setState({ cityRequired: "dispNone" });
         this.state.state_uuid === "" ? this.setState({ stateListRequired: "dispBlock" }) : this.setState({ stateListRequired: "dispNone" });
         this.state.pincode === "" ? this.setState({ pincodeRequired: "dispBlock" }) : this.setState({ pincodeRequired: "dispNone" });
 
-        if ((this.state.flatNo === "") || (this.state.locality === "") || (this.state.city === "") || (this.state.state_uuid === "") || (this.state.pincode === "")) { return; }
+        if ((this.state.flatno === "") || (this.state.locality === "") || (this.state.city === "") || (this.state.state_uuid === "") || (this.state.pincode === "")) { return; }
 
         var pinValidation = /^\d{6}$/;
 
@@ -279,7 +279,7 @@ class Checkout extends Component {
         if (this.state.pinCheck === true) {
             let saveAddressData = JSON.stringify({
                 "city": this.state.city,
-                "flat_building_name": this.state.flatNo,
+                "flat_building_name": this.state.flatno,
                 "locality": this.state.locality,
                 "pincode": this.state.pincode,
                 "state_uuid": this.state.state_uuid
@@ -449,8 +449,8 @@ class Checkout extends Component {
     }
 
     /* This method is used to apply a coupon when clicked on APPLY button. */
-    applyCouponCodeClickHandler = () => {
-        let value = this.state.couponCode;
+    applycouponcodeClickHandler = () => {
+        let value = this.state.couponcode;
         if (value !== null || value !== "") {
             let url = `${constants.couponUrl}/${value}`;
             return fetch(url, {
@@ -507,7 +507,7 @@ class Checkout extends Component {
                             <Step>
                                 <StepLabel>Delivery</StepLabel>
                                 <StepContent>
-                                    <Typography>
+                                    <Typography component={'div'} variant={'body2'}>
                                         <Tabs className="tabs" value={this.state.value} onChange={this.tabChangeHandler}>
                                             <Tab label="EXISTING ADDRESS" />
                                             <Tab label="NEW ADDRESS" />
@@ -530,8 +530,8 @@ class Checkout extends Component {
                                                             <div>{address.city}</div>
                                                             <div>{address.state.state_name}</div>
                                                             <div>{address.pincode}</div>
-                                                            <IconButton style={this.state.styleIcon} ref={this.myRefNew[index]}>
-                                                                <CheckCircleIcon className="tickIcon" onClick={() => this.addressClickHandler(address.id, index)} />
+                                                            <IconButton style={this.state.styleIcon} ref={this.myRefNew[index]} onClick={() => this.addressClickHandler(address.id, index)}>
+                                                                <CheckCircleIcon className="tickIcon" />
                                                             </IconButton>
                                                         </GridListTile>
 
@@ -547,8 +547,8 @@ class Checkout extends Component {
                                             <br />
                                             <FormControl style={{ marginBottom: '20px' }} required>
                                                 <InputLabel htmlFor="Flat / Building No.">Flat / Building No.</InputLabel>
-                                                <Input id="flatNo" type="text" flatNo={this.state.flatNo} onChange={this.inputFlatNoChangeHandler} />
-                                                <FormHelperText className={this.state.flatNoRequired}>
+                                                <Input id="flatno" type="text" flatno={this.state.flatno} onChange={this.inputflatnoChangeHandler} />
+                                                <FormHelperText className={this.state.flatnoRequired}>
                                                     <span className="red">required</span>
                                                 </FormHelperText>
                                             </FormControl>
@@ -629,8 +629,8 @@ class Checkout extends Component {
                         </Stepper>
                         {finished && (
                             <Paper square elevation={0} className={classes.resetContainer}>
-                                <Typography style={{padding:'2%'}}><b> View the summary & place your order now!</b></Typography>
-                                <Button style={{padding:'2%'}} onClick={this.handleReset} className={classes.button}>
+                                <Typography style={{ padding: '2%' }}><b> View the summary & place your order now!</b></Typography>
+                                <Button style={{ padding: '2%' }} onClick={this.handleReset} className={classes.button}>
                                     CHANGE
           </Button>
                             </Paper>
@@ -660,16 +660,16 @@ class Checkout extends Component {
                                 </div>
                                 <div style={{ marginBottom: '20px', padding: '2%' }}>
                                     <span>
-                                        <FormControl style={{ backgroundColor: 'rgb(241, 231, 211)'}}>
-                                            <InputLabel htmlFor="Coupon" style={{padding:'3%'}}>Coupon Code</InputLabel>
-                                            <Input id="couponCode" type="text" couponCode={this.state.couponCode} onChange={this.inputCouponCodeChangeHandler} />
+                                        <FormControl style={{ backgroundColor: 'rgb(241, 231, 211)' }}>
+                                            <InputLabel htmlFor="Coupon" style={{ padding: '3%' }}>Coupon Code</InputLabel>
+                                            <Input id="couponcode" type="text" couponcode={this.state.couponcode} onChange={this.inputcouponcodeChangeHandler} />
                                             <FormHelperText className={this.state.couponError}>
                                                 <span className="red">required</span>
                                             </FormHelperText>
                                         </FormControl>
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Button className={classes.button} variant="contained" onClick={() => this.applyCouponCodeClickHandler()}>APPLY</Button><br />
-                                        {this.state.percent > 0 && <div><br/>
+                                    <Button className={classes.button} variant="contained" onClick={() => this.applycouponcodeClickHandler()}>APPLY</Button><br />
+                                        {this.state.percent > 0 && <div><br />
                                             <div>Sub Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
                                             <br />
                                             <div>Discount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
