@@ -1,67 +1,91 @@
-.Input.clicked {
+.search-icon {
+    padding-bottom: 5px;
     color: white;
+    margin-right: 5px;    
 }
 
-/** Styling for Application Header*/
+/* width of search box section */
+
+#search-box-section {
+    width: 300px;
+}
+
+/*the header banner and aligning items to center */
+
 .app-header {
-    background-color: #243237;
-    display: flex;
+    background-color: #273238;
+    width: 100%;
     align-items: center;
-    height: 36px;
-    padding: 8px 16px 8px 8px;
-    justify-content: space-between;  
-}
-
-/** Styling for Restaurant Cards*/
-.card-details {    
-    justify-content: flex-start;
     display: flex;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    
 }
 
-.dispNone {
-    display: none;
+.user-name {
+    color: #c3c3c3;
+    text-transform: none;
 }
 
-
-.tabs-header {
-    margin-bottom: 20px;
+.menu-option {
+    font-weight: 500;
 }
-
-/** Styling for Error color*/
-.red {
-    color: red;
-} 
-
 
 .dispBlock {
     display: block;
 }
 
-
-.account-circle {
-    cursor: pointer;
-    color: ivory;
+.menu-option-link {
+    color: black;
+    text-decoration: none;
 }
 
-.hr {   
-    background-color: #f2f2f2;
-    height: 1.5px;
-    margin-right: 5px;
-    margin-left: 5px;
-    
+.profile-options-menu {
+    margin-top: 40px;
 }
 
-.MuiInput-underline:after {
-    border-bottom: 2px solid white !important;
+.tab-container {
+    padding: 0px;
+    text-align: center;
 }
 
-@media (max-width: 800px) {
-    .app-header {
-      flex-direction: column;
-      height: 122px;
-    }
-    .card-details {
+.tabs {
+    margin-bottom: 20px;
+}
+.dispNone {
+    display: none;
+}
+
+/** color red for Error validation messages */
+
+.red {
+    color: red;
+}
+
+/* style based on screen width */
+
+@media(max-width: 525px) {
+       .app-header {
         flex-direction: column;
+        align-items: baseline;
+        min-width: 100%;
+    }
+   
+    .profile-options-menu {
+        margin-top: 50px;
+    }
+}
+
+.account-icon {
+    margin-right: 5px;
+}
+
+.user-account-icon {
+    color: #c3c3c3;
+    margin-right: 5px;
+}
+
+@media(max-width:310px) {
+    #search-box-section {
+        width: auto;
     }
 }

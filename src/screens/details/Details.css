@@ -1,51 +1,213 @@
-.right-details{
-    width: 60%;    
-    padding: 20px;
-    text-align: left;
-}
+/*total amount in the cart display */
 
-.left-details {
-    width: 30%;    
-    /* padding: 20px; */
-    text-align: left;
-}
-  
-.details {
-    text-align: left;
-}
-
-.restaurant-details {    
+.total-amount {
+    display: flex;
+    margin: 5% 0% 0% 0%;
     justify-content: space-between;
+}
+
+/*width and height of restaurant image */
+
+.restaurant-img {
+    max-width: 300px;
+    width: auto;
+    height: 250px;
+}
+
+/*background of the restaurant details container */
+
+.restaurant-info-container {
+    background-color: #E7E7E7;
+    padding: 30px;
     display: flex;
-    flex-wrap: wrap;
 }
 
-.items-left-details {
-    width: 47%;    
-    padding: 20px;
-    text-align: left;
+/* details section with full width and left margin */
+
+.details-section {
+    width: 100%;
+    margin-left: 5%;
 }
 
-.item-details {
-    flex-wrap: wrap;
-    flex-direction: row;
-    display: flex;    
+/*bottom padding for star icon */
+
+.fa-star-icon {
+    padding-bottom: 1px;
 }
 
-.items-right-details {
-    width: 47%;    
-    padding: 20px;
-    text-align: left;
-}
+/* width and display style for the rating*/
 
-.restaurant-details-section {    
-    flex-wrap: wrap;    
+.rating-price-container {
+    width: 70%;
     display: flex;
-    background: lightgray;
-    flex-direction: row;
+    justify-content: space-between;
 }
 
-.MuiBadge-anchorOriginTopRightRectangle.MuiBadge-invisible {
-    transform : scale(1) translate(50%, -50%) !important;
+/*font to bold for customers */
+
+.no-of-customers {
+    font-weight: bold;
 }
 
+/* items/checkout frame */
+
+#items-checkout-container {
+    display: flex;
+    padding: 3% 5%;
+    justify-content: space-between;
+}
+
+/* caption text with color */
+
+.caption-text {
+    color: grey;
+    max-width: 125px;
+}
+
+/*width of items list */
+
+.items-container {
+    width: 50%;
+    margin-right: 10%;
+}
+
+/* item with center alignment */
+
+.menu-item-section {
+    display: flex;
+    align-items: center;
+}
+
+/* circle icon for Veg item */
+
+.fa-circle-green {
+    color: rgb(18, 136, 53);
+    font-size: large;
+}
+
+/*category name display */
+
+.category-name {
+    color: gray;
+    text-transform: uppercase;    
+    font-weight: 500;
+    font-size: smaller;
+    
+}
+
+/* icon for Non Veg item */
+
+.fa-circle-red {
+    color: rgb(180, 36, 16);
+    font-size: large;
+}
+
+/* Pascal Case */
+
+.menu-item {
+    text-transform: capitalize;
+}
+
+/* rupee icon display in the menu */
+
+.fa-rupee {
+    margin-right: 4px;
+}
+
+/*  price displayin the menu */
+
+.item-price {
+    margin-left: auto;
+}
+
+.wrap-white-space {
+    white-space: nowrap;
+}
+
+/* width for cart/checkout */
+
+.cart-checkout-container {
+    width: 50%;
+}
+
+/** menu items added to cart*/
+
+.cart-menu-item-section {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 5px;
+}
+
+/* quantity section in cart */
+
+.item-quantity-section {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/*in the cart with margin, width and alignment */
+
+.cart-item-price {
+    margin-left: auto;
+    color: gray;
+    min-width: 80px;
+    text-align: right;
+}
+
+/*menu item in cart */
+
+.cart-menu-item {
+    text-transform: capitalize;
+    color: gray;
+}
+
+/*screen width */
+
+@media(max-width: 700px) {    
+    .restaurant-info-container {
+        flex-direction: column;
+        align-items: center;
+    }  
+    /* full width on small view */
+    .rating-price-container {
+        width: 100%;
+    }
+      /* text to center */
+      .details-section {
+        text-align: center;
+    }  
+    /* menu items full screen width */
+    .items-container {
+        width: 100%;
+    }
+    /* checkout container full screen width */
+    .cart-checkout-container {
+        width: 100%;
+        margin: auto;
+    }
+      /* items/cart vertically in small screens */
+      #items-checkout-container {
+        flex-direction: column;
+    }
+}
+
+/*screen width like small mobiles */
+
+@media(max-width:350px) {    
+    .restaurant-img {
+        max-width: 250px;
+        width: auto;
+    }
+}
+
+/* bold font */
+
+.bold {
+    font-weight: bold;
+}
+.cart-checkout-card {
+    padding: 3%;
+}

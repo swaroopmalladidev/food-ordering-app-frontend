@@ -1,352 +1,405 @@
-import React, { Component } from 'react';
-import { constants } from '../../common/Apiurls';
 import './Details.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCircle } from '@fortawesome/free-solid-svg-icons'
-import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
-import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faMinus, faPlus, faRupeeSign, faStar } from "@fortawesome/free-solid-svg-icons";
+import { Fade, withStyles } from '@material-ui/core';
+import { faStopCircle } from '@fortawesome/fontawesome-free-regular';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AddIcon from '@material-ui/icons/Add';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import Badge from '@material-ui/core/Badge';
-import RemoveIcon from '@material-ui/icons/Remove';
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
+import CardHeader from '@material-ui/core/CardHeader';
 import CloseIcon from '@material-ui/icons/Close';
-import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 import Header from '../../common/header/Header';
-import { titleCase } from "title-case";
+import IconButton from '@material-ui/core/IconButton';
+import React, { Component } from 'react';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Snackbar from '@material-ui/core/Snackbar';
+import 'typeface-roboto';
+import Typography from '@material-ui/core/Typography';
 
-
+/**
+ *
+ * @param {*} theme
+ */
+const styles = theme => ({   
+     /*menu item */
+     menuItem: {
+        marginLeft: '4%'
+    }, 
+    detail: {
+        margin: '2% 0%'
+    },
+      /*category name */
+      category: {
+        marginBottom: '1%'
+    },
+    /* font to bold */
+    bold: {
+        'font-weight': 600
+    },    
+    cartMenuItem: {
+        marginLeft: '5%',
+        width: '40%'
+    },
+    /* badge on cart to show large badge */
+    badge: {
+        transform: 'scale(1.2) translate(50%, -50%)'
+    },
+    /* Style the minus button on cart section */
+    minusBtn: {
+        color: 'black',
+        padding: '5px',       
+        margin: '0px 8px',
+        fontSize: 'medium'       
+    },
+    /* Style the plus button on cart section */
+    plusBtn: {
+        margin: '0px 8px',   
+        color: 'black',
+        padding: '5px',
+        fontSize: 'medium'
+    },
+     /*add icon  */
+     addIcon: {
+        marginLeft: '4%'
+    }    
+});
 
 class Details extends Component {
-
-    constructor(props) {
-        super(props);
+    constructor() {
+        super();        
         this.state = {
-            restaurant_picture: null,
-            restaurant_name: null,
-            restaurant_locality: null,
-            restaurant_category: [],
-            restaurant_customer_rating: "",
-            restaurant_number_customers_rated: null,
-            restaurant_average_price: null,
-            item_count: 0,
-            state_items_list: [],
-            found: false,
-            open: false,
-            message: "",
-            total: 0
-        }
-
-        this.getData();
-
-        // this.state.item_count = 0;
+            restaurantDetails: {},
+            cartTotalAmount: 0,
+            cartItems: [],
+            snackBarMsg: '',
+            transition: Fade,
+            noOfItemsInCart: 0,
+            showSnackbar: false,       
+            isBadgeVisible: true
+        };
     }
-    /* This method is used to get the restaurant details based on UUID. */
-    getData = () => {
-        let that = this;
-        let myUrl = `${constants.restaurantUrl}/${this.props.match.params.id}`;
-        return fetch(myUrl, {
-            method: 'GET',
-        }).then((response) => {
-            return response.json();
-        }).then((jsonResponse) => {
-            that.setState({
-                restaurant_id: jsonResponse.id,
-                restaurant_picture: jsonResponse.photo_URL,
-                restaurant_name: jsonResponse.restaurant_name,
-                restaurant_locality: jsonResponse.address.locality,
-                restaurant_category: jsonResponse.categories,
-                restaurant_customer_rating: jsonResponse.customer_rating,
-                restaurant_number_customers_rated: jsonResponse.number_customers_rated,
-                restaurant_average_price: jsonResponse.average_price
-            });
-        }).catch((error) => {
-            console.log('error restaurant details data', error);
+
+    
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        //Snackbar
+        this.setState({ showSnackbar: false, snackBarMsg: '' });
+    }
+
+    componentWillMount() {
+        let restaurantID = this.props.match.params.restaurantID;
+        let xhr = new XMLHttpRequest();
+        let thisComponent = this;
+        xhr.addEventListener('readystatechange', function () {
+            if (this.readyState === 4 && this.status === 200) {
+                let response = JSON.parse(this.response);
+                let categories = response.categories;
+                let categoriesText = '';
+                // parse the categories separated by ',' to show as single text
+                for (let index = 0; index < categories.length; index++) {
+                    categoriesText = categoriesText.concat(categories[index].category_name);
+                    if (index < categories.length - 1) {
+                        categoriesText = categoriesText.concat(',').concat(' ');
+                    }
+                }
+                // set the restaurant details from the api response
+                let restaurantDetails = {
+                    uuid: response.id,
+                    restaurantName: response.restaurant_name,
+                    photoURL: response.photo_URL,
+                    customerRating: response.customer_rating,
+                    averagePrice: response.average_price,
+                    noOfCustomersRated: response.number_customers_rated,
+                    locality: response.address.locality,
+                    categories: response.categories,
+                    categoriesText: categoriesText
+                }
+                // Set the details to state variable
+                thisComponent.setState({
+                    restaurantDetails: restaurantDetails
+                });
+            }
+        })
+        let data = null;
+        // Access the get restaurant api of backend to get the details based on restaurantID
+        xhr.open('GET', this.props.baseUrl + '/restaurant/' + restaurantID);
+        xhr.send(data);
+    }
+
+    /*Adds the item to cart, updates the quantity if the item is already in cart */
+    addItemClick = (item) => {
+
+        let cartItems = this.state.cartItems;
+        let isItemAlreadyInCart = false;
+        let noOfItemsInCart = this.state.noOfItemsInCart;        
+
+        cartItems.forEach(cartItem => {
+            if (cartItem.id === item.id) {
+                cartItem.quantity++;
+                cartItem.totalItemPrice = cartItem.price * cartItem.quantity;
+                isItemAlreadyInCart = true;
+            }
+        });        
+        if (!isItemAlreadyInCart) {
+            let cartItem = {
+                id: item.id,
+                item_name: item.item_name,
+                price: item.price,
+                item_type: item.item_type,
+                quantity: 1,
+                totalItemPrice: item.price
+            }
+            cartItems.push(cartItem);
+        }
+        noOfItemsInCart++;
+        
+        this.setState({
+            showSnackbar: true,            
+            cartItems: cartItems,
+            noOfItemsInCart: noOfItemsInCart,
+            snackBarMsg: 'Item added to cart!',
+            cartTotalAmount: this.state.cartTotalAmount + item.price
         });
     }
 
+   
+    /*Checkout with the items added to cart*/
+    checkoutClick = () => {
+        let isUserLoggedIn = sessionStorage.getItem('access-token') !== null;
+        // items are added to cart
+        if (this.state.cartItems !== null && this.state.cartItems.length > 0) {
+            // Check the customer is logged or not
+            if (!isUserLoggedIn) {
+                this.setState({
+                    showSnackbar: true,
+                    snackBarMsg: 'Please login first!'
+                });
+            } else {
+                // proceed to checkout
+                this.props.history.push({
+                    pathname: '/checkout',
+                    state: {
+                        cartItems: this.state.cartItems,
+                        restaurantID: this.state.restaurantDetails.uuid,
+                        restaurantName: this.state.restaurantDetails.restaurantName
+                    }
+                });
+            }
+        }
+        else {
+            // snackbar message to add items.
+            this.setState({
+                showSnackbar: true,
+                snackBarMsg: 'Please add an item to your cart!'
+            });
+        }
+    }
+
+
+    /*Removes the item from the cart and update price and total amount*/
+    removeItemFromCart = (cartItem) => {
+        let snackBarMsg = '';
+        cartItem.quantity--;
+        // Quantity zero indicates, this items should be removed from cart completely
+        if (cartItem.quantity <= 0) {
+            let cartItems = this.state.cartItems;
+            // remove the item from the cart
+            cartItems.splice(cartItems.indexOf(cartItem), 1);
+            snackBarMsg = 'Item removed from cart!';
+        } else {
+            // update the total item price for the updated quantity
+            cartItem.totalItemPrice = cartItem.quantity * cartItem.price;
+            snackBarMsg = 'Item quantity decreased by 1!';
+        }
+        // Update the cart total amount, no of items count in cart
+        this.setState({
+            showSnackbar: true,
+            snackBarMsg: snackBarMsg,
+            noOfItemsInCart: this.state.noOfItemsInCart - 1,
+            cartTotalAmount: this.state.cartTotalAmount - cartItem.price
+        });
+    }
+
+ /*user is not logged in hide the badge */
+ toggleBadgeVisibility = (isBadgeVisible) => {
+    this.setState({
+        isBadgeVisible: isBadgeVisible
+    });
+}
+
+
+    /*Add quantity of the items in cart */
+    addItemToCart = (cartItem) => {
+        cartItem.quantity++;
+        cartItem.totalItemPrice = cartItem.quantity * cartItem.price;
+        this.setState({
+            showSnackbar: true,
+            snackBarMsg: 'Item quantity increased by 1!',
+            noOfItemsInCart: this.state.noOfItemsInCart + 1,
+            cartTotalAmount: this.state.cartTotalAmount + cartItem.price
+        });
+    }
 
     render() {
+        const { classes } = this.props;
         return (
-            <div className="details">
-                <Header
-                    screen={"Details"}
-                    history={this.props.history} />
-                <div className="restaurant-details-section">
-                    <div className="left-details">
-                        <img style={{ height: '90%', width: '80%', align: 'left', padding: '20px' }}
-                            src={this.state.restaurant_picture}
-                            alt="restaurant_logo" />
-                    </div>
-                    <div className="right-details">
-                        <div style={{ fontSize: '30px', fontWeight: 'bold' }}>{this.state.restaurant_name}</div>
-                        <br />
-                        <div style={{ textTransform: "uppercase" }}>{this.state.restaurant_locality}</div>
-                        <br />
-                        <div>
-                            {this.state.restaurant_category.map(cat => (
-                                <span>{cat.category_name + ", "}</span>
-                            ))}
-                        </div>
-                        <br />
-                        <div className="restaurant-details">
-                            <span><div><FontAwesomeIcon icon={faStar} ></FontAwesomeIcon>&nbsp;&nbsp;<b>{Number.parseFloat(this.state.restaurant_customer_rating).toFixed(1)}</b></div>
-                                <div style={{ fontWeight: 'lighter', fontSize: '13px' }}>AVERGAE RATING BY<br />{this.state.restaurant_number_customers_rated} CUSTOMERS</div></span>
-                            <span><div><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon> {this.state.restaurant_number_customers_rated}</div>
-                                <div style={{ fontWeight: 'lighter', fontSize: '13px' }}>AVERAGE COST FOR <br />TWO PEOPLE</div></span></div>
-                    </div>
-                </div>
-
-                <div className="item-details">
-                    <div className="items-left-details">
-                        {this.state.restaurant_category != null && this.state.restaurant_category.map(cat => (
-                            <div>
-                                <div style={{ textTransform: "uppercase" }}><b>{cat.category_name}</b></div>
-                                <hr />
-                                {cat.item_list.map(item => (
-                                    <div className="item-details">
-                                        {item.item_type === "NON_VEG" && <span id="non_veg" style={{ float: "left", width: "75%" }}>
-                                            <FontAwesomeIcon icon={faCircle} style={{ color: "red" }}></FontAwesomeIcon>
-                                            &nbsp;    {titleCase(item.item_name)}
-                                        </span>}
-                                        {item.item_type === "VEG" && <span id="veg" style={{ float: "left", width: "75%" }}>
-                                            <FontAwesomeIcon icon={faCircle} style={{ color: "green" }}></FontAwesomeIcon>
-                                            &nbsp;    {titleCase(item.item_name)}
-                                        </span>}
-                                        <span style={{ float: "left", width: "15%" }}>
-                                            <FontAwesomeIcon icon={faRupeeSign}  ></FontAwesomeIcon>
-
-                                            &nbsp; {Number.parseFloat(item.price).toFixed(2)}
-                                        </span>
-                                        <span style={{ float: "right", width: "10%" }}>
-                                            <AddIcon style={{ cursor: "pointer"}} onClick={() => this.onAddClicked(item)}></AddIcon>
-                                        </span>
-                                    </div>
-                                ))}
+            <div>
+                <Header pageId='details' baseUrl={this.props.baseUrl} toggleBadgeVisibility={this.toggleBadgeVisibility} />
+                {/*Complete page with details with data of restaurant*/}
+                {this.state.restaurantDetails.uuid &&
+                    <div>
+                        <div className='restaurant-info-container'>
+                            <div className='image-section'>
+                                {/*The restaurant image*/}
+                                <img className='restaurant-img' src={this.state.restaurantDetails.photoURL} alt={this.state.restaurantDetails.restaurantName} />
                             </div>
-                        ))}
-                    </div>
-
-                    <div className="items-right-details" >
-                        <Card className="cardStyle">
-                            <CardContent>
-                                <div style={{ padding: "16px" }}>
-
-
-                                    <div className="item-details" >
-                                        <Badge badgeContent={this.state.item_count} color="primary">
-                                            <ShoppingCartIcon ></ShoppingCartIcon>
-                                        </Badge><span style={{ paddingLeft: "7%", width: "10%", paddingBottom: "2.5%", fontSize: '17px' }}><b>My Cart</b></span>
+                            {/*Details of the restaurant*/}
+                            <div className='details-section'>
+                                <Typography variant='h4' component='h4' className={classes.detail}>
+                                    {this.state.restaurantDetails.restaurantName}
+                                </Typography>
+                                <Typography variant='subtitle2' component='p' className={classes.detail}>
+                                    {this.state.restaurantDetails.locality}
+                                </Typography>
+                                <Typography variant='subtitle2' component='p' className={classes.detail}>
+                                    {this.state.restaurantDetails.categoriesText}
+                                </Typography>
+                                {/*Show the ratings and no of customers for two */}
+                                <div className='rating-price-container'>
+                                    <div className='rating-section'>
+                                        <Typography variant='subtitle1' component='p' className={classes.bold}>
+                                            <FontAwesomeIcon icon={faStar} className='fa-star-icon' /> {this.state.restaurantDetails.customerRating}
+                                        </Typography>
+                                        <Typography variant='caption' component='p' className='caption-text'>
+                                            AVERAGE RATING BY <span className='no-of-customers'>{this.state.restaurantDetails.noOfCustomersRated}</span> CUSTOMERS
+                                    </Typography>
                                     </div>
-                                    <div>
-                                        {this.state.state_items_list.map(it => (
-                                            <div className="item-details" key={it.id} >
-                                                <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faStopCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faStopCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
-                                                <span style={{ align: 'left', width: "53%", color: "grey" }}>{titleCase(it.name)}</span>
-                                                <span style={{ align: 'left', width: "4%" }}>
-                                                    <RemoveIcon style={{ cursor: "pointer" }} onClick={() => this.onItemRemoveClicked(it)}></RemoveIcon>
+                                    <div className='price-section'>
+                                        <Typography variant='subtitle1' component='p' className={classes.bold}>
+                                            <FontAwesomeIcon icon={faRupeeSign} /> {this.state.restaurantDetails.averagePrice}
+                                        </Typography>
+                                        <Typography variant='caption' component='p' className='caption-text'>
+                                            AVERAGE COST FOR TWO PEOPLE
+                                    </Typography>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id='items-checkout-container'>
+                            {/*List of menu items available in the restaurant with their price*/}
+                            <div className='items-container'>
+                                {this.state.restaurantDetails.categories.map(category => (
+                                    <div key={category.id}>
+                                        {/*category name*/}
+                                        <Typography className={classes.category}>
+                                            <span className='category-name'>{category.category_name}</span>
+                                        </Typography>
+                                        <Divider />
+                                        {category.item_list.map(item => (
+                                            <div className='menu-item-section' key={item.id}>
+                                                {/**
+                                                 * Show the circle based on item type red(non veg)/green(veg)
+                                                 */}
+                                                {'VEG' === item.item_type && <FontAwesomeIcon icon={faCircle} className='fa-circle-green' />}
+                                                {'NON_VEG' === item.item_type && <FontAwesomeIcon icon={faCircle} className='fa-circle-red' />}
+
+                                                <Typography className={classes.menuItem}>
+                                                    <span className='menu-item'>{item.item_name}</span>
+                                                </Typography>
+                                                {/*rupee symbol and the price of the item with a plus sign icon to add to cart*/}
+                                                <span className='item-price wrap-white-space'>
+                                                    <FontAwesomeIcon icon={faRupeeSign} className='fa-rupee' />{item.price.toFixed(2)}
                                                 </span>
-                                                <span style={{ align: 'left', width: "2%" }}>{it.count}</span>
-                                                <span style={{ align: 'left', width: "14%" }}>
-                                                    <AddIcon style={{ cursor: "pointer" }} onClick={() => this.onItemAddClicked(it)}></AddIcon>
-                                                </span>
-                                                <span style={{ align: 'left', width: "13%", color: "grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;  {Number.parseFloat(it.price).toFixed(2)}</span>
+                                                <IconButton className={classes.addIcon} onClick={() => this.addItemClick(item)}><AddIcon /></IconButton>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="item-details" style={{ paddingTop: "2.5%", paddingBottom: "2.5%" }} >
-                                        <span style={{ align: 'left', width: "64%", fontSize: '15px' }}><b>TOTAL AMOUNT</b></span>
-                                        <span style={{ align: 'left', width: "25%" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon><b>&nbsp;&nbsp; {Number.parseFloat(this.state.total).toFixed(2)}</b></span>
-                                    </div>
-                                    <div className="item-details">
-                                        <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onItemCheckoutClicked()} color="primary">CHECKOUT</Button>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
+                                ))}
+                            </div>
+                            <div className='cart-checkout-container'>
+                                <Card variant='outlined' className='cart-checkout-card'>
+                                    {/*Cart icon with My Cart Card header */}
+                                    <CardHeader
+                                        avatar={
+                                            <Badge color='primary' badgeContent={this.state.noOfItemsInCart} showZero invisible={!this.state.isBadgeVisible} classes={{ anchorOriginTopRightRectangle: classes.badge }}>
+                                                <ShoppingCartIcon fontSize='default' />
+                                            </Badge>
+                                        }
+                                        title='My Cart'
+                                        titleTypographyProps={{
+                                            variant: 'h6'
+                                        }}>
+                                    </CardHeader>
+
+                                    <CardContent>
+                                        {this.state.cartItems.map(cartItem =>
+                                            <div className='cart-menu-item-section' key={'cart' + cartItem.id}>
+                                                {/*stop circle O based on item red(non veg)/green(veg)*/}
+                                                {'VEG' === cartItem.item_type && <FontAwesomeIcon icon={faStopCircle} className='fa-circle-green' />}
+                                                {'NON_VEG' === cartItem.item_type && <FontAwesomeIcon icon={faStopCircle} className='fa-circle-red' />}
+
+                                                <Typography className={classes.cartMenuItem}>
+                                                    <span className='cart-menu-item'>{cartItem.item_name}</span>
+                                                </Typography>                                              
+                                                <section className='item-quantity-section'>
+                                                    <IconButton className={classes.minusBtn} onClick={() => this.removeItemFromCart(cartItem)}>
+                                                        <FontAwesomeIcon icon={faMinus} className='plus-minus-icon' size='1x' />
+                                                    </IconButton>
+                                                    <span>{cartItem.quantity}</span>
+                                                    <IconButton className={classes.plusBtn} onClick={() => this.addItemToCart(cartItem)}>
+                                                        <FontAwesomeIcon icon={faPlus} className='plus-minus-icon' size='1x' />
+                                                    </IconButton>
+                                                </section>
+                                                <span className='cart-item-price wrap-white-space'>
+                                                    <FontAwesomeIcon icon={faRupeeSign} className='fa-rupee' />
+                                                    {cartItem.totalItemPrice.toFixed(2)}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        <div className='total-amount'>
+                                            <Typography>
+                                                <span className='bold'>TOTAL AMOUNT</span>
+                                            </Typography>
+                                            <span className='bold wrap-white-space'>
+                                                <FontAwesomeIcon icon={faRupeeSign} className='fa-rupee' />
+                                                {this.state.cartTotalAmount.toFixed(2)}
+                                            </span>
+                                        </div>
+                                    </CardContent>
+                                    <Button variant='contained' color='primary' onClick={this.checkoutClick} fullWidth>Checkout</Button>
+                                </Card>
+                            </div>
+                        </div>
+                        {/*Snack bar at the bottom left of the page*/}
+                        <Snackbar
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            open={this.state.showSnackbar}
+                            autoHideDuration={10000}
+                            onClose={this.handleClose}
+                            TransitionComponent={this.state.transition}
+                            message={this.state.snackBarMsg}
+                            action={
+                                /*close the snackbar*/
+                                <React.Fragment>
+                                    <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleClose}>
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                </React.Fragment>
+                            } />
                     </div>
-
-                </div>
-                <Snackbar
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                    }}
-                    open={this.state.open} message={this.state.message}
-                    action={[<IconButton
-                        key="close"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={() => this.handleClose()}
-                    >
-                        <CloseIcon />
-                    </IconButton>,
-                    ]}>
-
-                </Snackbar>
-
+                }
             </div>
         )
     }
-
-    /* This method is used to navigate to checkout page.*/
-    onItemCheckoutClicked = () => {
-
-        if (this.state.state_items_list.length === 0) {
-
-            this.setState({
-                open: true
-            })
-            this.setState({ message: "Please add an item to your cart!" })
-        } else {
-            // Check for Customer logged in or not ....
-            var token = sessionStorage.getItem('access-token');
-            console.log('token');
-            console.log(token);
-            if (token === null || token === "") {
-                this.setState({
-                    open: true
-
-                })
-                this.setState({ message: "Please login first!" })
-            }
-            else {
-                this.props.history.push(
-                    { pathname: '/checkout', state: { items_list_new: this.state.state_items_list, total: this.state.total, restaurant_id: this.state.restaurant_id, restaurant_name: this.state.restaurant_name } }
-                )
-            }
-        }
-
-
-
-    }
-
-    /* This method is used to increase the count of items. */
-    onItemAddClicked = (newItem) => {
-        let newItemList = this.state.state_items_list
-        let itemIndex = 0;
-        newItemList.forEach(function (item, index) {
-            if (item.name === newItem.name) {
-                itemIndex = index;
-            }
-        }, this);
-        let newItems = newItemList;
-        let cost = newItem.price / newItem.count
-        newItem.price = newItem.price + cost
-        newItem.count = newItem.count + 1
-        let newtotal = this.state.total + cost
-        newItems.splice(itemIndex, 1, newItem);
-        let newitem_count = this.state.item_count + 1
-        this.setState({ state_items_list: newItemList });
-        this.setState({
-            open: true,
-            total: newtotal,
-            item_count: newitem_count
-        })
-        this.setState({ message: "Item quantity increased by 1!" })
-    }
-
-    /* This method is used to add item to cart.*/
-    onAddClicked = (newItem) => {
-        let newItemList = this.state.state_items_list
-        let itemIndex = 0;
-        if (newItemList.length > 0) {
-            newItemList.forEach(function (item, index) {
-                if (item.name === newItem.item_name) {
-                    itemIndex = index;
-                }
-            }, this);
-        }
-        let itemNode = newItemList[itemIndex];
-        let newItems = newItemList;
-        let itemNodeNew = {}
-        if (itemNode !== undefined) {
-            if (itemNode.name === newItem.item_name) {
-                itemNodeNew.price = itemNode.price + newItem.price
-                itemNodeNew.count = itemNode.count + 1
-                itemNodeNew.name = itemNode.name
-                itemNodeNew.id = itemNode.id
-                itemNodeNew.item_type = itemNode.item_type
-                newItems.splice(itemIndex, 1, itemNodeNew);
-                let newitem_count = this.state.item_count + 1
-                let newtotal = this.state.total + newItem.price
-                this.setState({
-                    open: true,
-                    item_count: newitem_count,
-                    total: newtotal
-                })
-                this.setState({ message: "Item added to cart!" })
-                this.setState({ state_items_list: newItems });
-                return
-            }
-        }
-        itemNodeNew.price = newItem.price
-        itemNodeNew.name = newItem.item_name
-        itemNodeNew.count = 1
-        itemNodeNew.id = newItem.id
-        itemNodeNew.item_type = newItem.item_type
-        let newtotal = this.state.total + newItem.price
-        newItems.push(itemNodeNew)
-        let newitem_count = this.state.item_count + 1
-        this.setState({
-            state_items_list: newItems,
-            total: newtotal,
-            item_count: newitem_count
-        });
-        this.setState({ open: true })
-        this.setState({ message: "Item added to cart!" })
-    }
-
-    /* This method is used to close. */
-    handleClose = () => {
-        this.setState({ open: false })
-    };
-
-    /* This method is used to decrease the count of an item. */
-    onItemRemoveClicked = (newItem) => {
-        let newItemList = this.state.state_items_list
-        let itemIndex = 0;
-        newItemList.forEach(function (subscriber, index) {
-            if (subscriber.name === newItem.name) {
-                itemIndex = index;
-            }
-        }, this);
-        let newItems = newItemList;
-        let cost = newItem.price / newItem.count
-        newItem.price = newItem.price - cost
-        newItem.count = newItem.count - 1
-        let newtotal = this.state.total - cost
-        if (newItem.count !== 0) {
-            newItems.splice(itemIndex, 1, newItem);
-        }
-        else {
-            newItems.splice(itemIndex, 1);
-        }
-        let newitem_count = this.state.item_count - 1
-        this.setState({ state_items_list: newItemList });
-        this.setState({
-            open: true,
-            total: newtotal,
-            item_count: newitem_count
-        })
-        if (newItem.count === 0) {
-            this.setState({
-                message: "Item removed from cart!",
-                open: true
-            })
-        }
-        else {
-            this.setState({
-                message: "",
-                open: false
-            })
-        }
-    }
-
 }
 
-export default Details;
+export default withStyles(styles)(Details);
