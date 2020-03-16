@@ -1,724 +1,870 @@
-import React, { Component } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import './Checkout.css';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import { constants } from '../../common/Apiurls';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
+import { Card, CardContent, CardHeader, withStyles } from '@material-ui/core';
+import { faRupeeSign } from "@fortawesome/free-solid-svg-icons";
+import { faStopCircle } from '@fortawesome/fontawesome-free-regular';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Redirect } from 'react-router';
+import Button from '@material-ui/core/Button';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CloseIcon from '@material-ui/icons/Close';
+import Divider from '@material-ui/core/Divider';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import FormLabel from '@material-ui/core/FormLabel';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import PropTypes from 'prop-types';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import IconButton from '@material-ui/core/IconButton';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Divider from '@material-ui/core/Divider';
 import Header from '../../common/header/Header';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStopCircle } from '@fortawesome/free-solid-svg-icons';
-import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import React, { Component } from 'react';
+import Select from '@material-ui/core/Select';
 import Snackbar from '@material-ui/core/Snackbar';
-import CloseIcon from '@material-ui/icons/Close';
-import { titleCase } from "title-case";
-// import { fontWeight } from '@material-ui/system';
+import Step from '@material-ui/core/Step';
+import StepContent from '@material-ui/core/StepContent';
+import StepLabel from '@material-ui/core/StepLabel';
+import Stepper from '@material-ui/core/Stepper';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '90%',
-    },
-    actionsContainer: {
-        marginBottom: theme.spacing(2),
-    },
-    button: {
-        marginRight: theme.spacing(1),
-        marginTop: theme.spacing(1),
-    },
-    gridList: {
-        transform: 'translateZ(0)',
-        flexWrap: 'nowrap',
-    },
+/**
+ * 
+ * @param {*} theme
+ */
+const styles = theme => ({   
+
     resetContainer: {
-        padding: theme.spacing(3),
+        padding: theme.spacing(3)
     },
-    gridListAddresses: {
-        flexWrap: 'wrap',
-        display: 'flex',
-        overflow: 'hidden',
-        justifyContent: 'space-around'
-
+    /*Action container in stepper */
+    actionsContainer: {
+        marginBottom: theme.spacing(2)
     },
-}));
+    
+      /*addresses*/
+      gridList: {
+        flexWrap: 'nowrap',       
+        transform: 'translateZ(0)'
+    },
+    /*Margin and width for input controls*/
+    formControl: {
+        margin: theme.spacing(1),
+        width: 200,
+    },
+  
+   
+     /*Coupon text box */
+     textField: {
+        backgroundColor: '#e8e8e8 !important',
+        marginBottom: '20px'        
+    },
+     /*Border color for selected address */
+     coloredBorder: {
+        borderRadius: '5px',
+        boxShadow: '2px 2px #e0265f',
+        border: '2px solid #e0265f',        
+        margin: '10px'
+    },
 
-const classes = useStyles;
+    /*Align button icon */
+    buttonAlign: {
+        float: 'right'
+    },
+    /*Border when address is not selected */
+    noBorder: {
+        border: 'none',
+        margin: '10px'
+    },
+    
+    /*Set color to green */
+    green: {
+        color: 'green'
+    },
+  
+    /*Bottom margin for button */
+    buttonMargin: {
+        marginTop: '20px'
+    },
+      /*Set color to grey */
+      grey: {
+        color: 'grey',
+    },
+    /*Margin for menu item */
+    cartMenuItem: {
+        marginLeft: '4%',
+        width: '40%'
+    },   
+    /*Apply coupon button */
+    applyBtn: {
+        marginBottom: '20px'
+    },
+     
+     button: {
+        marginTop: theme.spacing(1),
+        marginRight: theme.spacing(1),
+    }
+});
 
+/**
+ * 
+ * @param {*} props 
+ */
 const TabContainer = function (props) {
     return (
-        <Typography component="div" style={{ padding: 0, textAlign: 'left' }}>
+        <Typography component='div' className="address-tab-container">
             {props.children}
         </Typography>
-    )
+    );
 }
 
-TabContainer.propTypes = {
-    children: PropTypes.node.isRequired
-}
 
 class Checkout extends Component {
-
     constructor(props) {
         super(props);
-
-        this.myRef = [];
-        this.myRefNew = [];
-
-        if (sessionStorage.getItem('access-token') == null) {
-            props.history.replace('/');
+        let restaurantName = null;       
+        let restaurantID = null;
+        let cartItems = null;
+        
+        if (props.location.state) {
+            cartItems = props.location.state.cartItems;
+            restaurantID = props.location.state.restaurantID;
+            restaurantName = props.location.state.restaurantName;
+        } else {
+            cartItems = [];
+            restaurantID = '';
+            restaurantName = '';
         }
-        this.state = {
-            modalIsOpen: false,
+        /*All the required fields and values*/
+        this.state = {            
+            paymentModes: [],            
+            customerAddresses: [],
+            states: [],
+            addressIsSelected: [],
+            buildingNoRequired: 'dispNone',
             value: 0,
-            flatnoRequired: "dispNone",
-            statesListRequired: "dispNone",
-            localityRequired: "dispNone",
-            cityRequired: "dispNone",
-            pincodeRequired: "dispNone",
-            stateListRequired: "dispNone",
-            couponError: "dispNone",
-            pinValid: "dispNone",
-            flatno: "",
-            statesList: [],
-            state_uuid: "",
-            locality: "",
-            city: "",
-            pincode: "",
-            snackMessage: "",
-            couponcode: "",
-            paymentMethods: [],
-            addressList: [],
-            message: "",
-            address_id: "",
-            payment_id: "",
-            stepIndex: 0,
-            saveAddress: false,
-            finished: false,
-            snackOpen: false,
-            saveOrder: false,
-            pinCheck: false,
-            percent: 0,
-            newTotal: this.props.location.state.total,
-            subTotal: 0,
+            steps: ['Delivery', 'Payment'],
+            localityRequired: 'dispNone',
+            cityRequired: 'dispNone',
+            stateRequired: 'dispNone',
+            pincodeRequired: 'dispNone',
+            invalidPincode: 'dispNone',
+            couponName: '',
+            couponId: '',
+            buildingNo: '',
+            selectedPaymentId: '',
+            selectedAddressId: '',
+            locality: '',           
+            city: '',            
+            addressState: '',
+            snackBarMsg: '',
+            pincode: '',
+            restaurantID: restaurantID,
+            restaurantName: restaurantName,            
+            selectedAddress: false,            
+            cartItems: cartItems,
+            cartTotalAmount: 0,           
+            discountPercentage: 0,
             discount: 0,
-            coupon_id: "",
-            style: {},
-            loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
-            index: null
+            subTotal: 0,
+            totalAmountWithoutDiscount: 0,
+            showSnackbar: false,
+            isUserLoggedIn: sessionStorage.getItem('access-token') !== null,
+            cols: 3,
+            activeStep: 0,            
         }
-        this.getExistingAddress();
-        this.getPaymentMethods();
-        this.getStatesList();
     }
 
-    /* This method is used to handle changes between EXISTING ADDRESS and NEW ADDRESS. */
+    
+    UNSAFE_componentWillMount() {
+        
+        if (this.props.location.state === undefined) {
+            this.props.history.push({
+                pathname: '/'
+            })
+        }
+        /*Get the different payment methods */
+        let that = this;
+        let xhrData = new XMLHttpRequest();
+        let data = null;
+        xhrData.addEventListener("readystatechange", function () {            
+            if (this.readyState === 4 && this.status === 200) {               
+                that.setState({
+                    paymentModes: JSON.parse(this.response).paymentMethods
+                });
+            }
+        });
+        xhrData.open("GET", this.props.baseUrl + '/payment');
+        xhrData.send(data);       
+        this.fetchSavedAddressesOfCustomer();
+        // Get states details 
+        let xhrDataStates = new XMLHttpRequest();
+        xhrDataStates.addEventListener("readystatechange", function () {            
+            if (this.readyState === 4 && this.status === 200) {
+                //List of states.
+                that.setState({
+                    states: JSON.parse(this.response).states
+                })
+            }
+        });
+        xhrDataStates.open("GET", this.props.baseUrl + '/states');
+        xhrDataStates.send(data);
+    }
+
+
+   /*Validating all mandatory field checks saves the address */
+   saveAddressClickHandler = () => {        
+    let cityRequired = 'dispNone';
+    let buildingNoRequired = 'dispNone';
+    let invalidPincode = 'dispNone';        
+    let stateRequired = 'dispNone';
+    let localityRequired = 'dispNone';
+    let pincodeRequired = 'dispNone';
+    let proceedToSaveAddress = true;
+    
+
+    // check for empty field validation, 
+    if (this.state.buildingNo === '') {
+        proceedToSaveAddress = false;
+        buildingNoRequired = 'dispBlock';            
+    }
+    if (this.state.locality === '') {            
+        proceedToSaveAddress = false;
+        localityRequired = 'dispBlock';
+    }
+    if (this.state.city === '') {
+        proceedToSaveAddress = false;
+        cityRequired = 'dispBlock';            
+    }
+    if (this.state.pincode === '') {           
+        proceedToSaveAddress = false;
+        pincodeRequired = 'dispBlock';
+    }
+    if (this.state.addressState === '') {           
+        proceedToSaveAddress = false;
+        stateRequired = 'dispBlock';
+    }
+
+    let pincodePattern = new RegExp('^\\d{6}$');
+
+    // Pincode is 6 digits or not
+    if (this.state.pincode !== '' && !pincodePattern.test(this.state.pincode)) {
+        //Invalid pincode message
+        pincodeRequired = 'dispNone';
+        proceedToSaveAddress = false;
+        invalidPincode = 'dispBlock';           
+    }
+
+    // Validation messages based on the required fields.
+    this.setState({
+        buildingNoRequired: buildingNoRequired,
+        localityRequired: localityRequired,
+        cityRequired: cityRequired,
+        stateRequired: stateRequired,
+        pincodeRequired: pincodeRequired,
+        invalidPincode: invalidPincode
+    });
+
+    // Submit the address to save in backend
+    if (proceedToSaveAddress) {
+        let xhr = new XMLHttpRequest();
+        let thisComponent = this;
+        xhr.addEventListener('readystatechange', function () {
+            if (this.readyState === 4 && this.status === 201) {
+                thisComponent.setState({ value: 0 });
+                thisComponent.fetchSavedAddressesOfCustomer();
+            }
+        });
+        // json request for address
+        let addressData = JSON.stringify({
+            "city": this.state.city,
+            "flat_building_name": this.state.buildingNo,
+            "locality": this.state.locality,
+            "pincode": this.state.pincode,
+            "state_uuid": this.state.addressState
+        });
+        // Save address endpoint
+        xhr.open('POST', this.props.baseUrl + '/address');
+        xhr.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(addressData);
+    }
+}
+
+
+
+    /*Saved addresses for a customer*/
+    fetchSavedAddressesOfCustomer = () => {
+        let xhrDataAddress = new XMLHttpRequest();
+        let thisComponent = this;
+        xhrDataAddress.addEventListener("readystatechange", function () {            
+            if (this.readyState === 4 && this.status === 200) {
+                let addresses = JSON.parse(this.response).addresses;                
+                if (addresses) {                   
+                    thisComponent.setState({
+                        customerAddresses: addresses
+                    });
+                }
+                let addressIsSelectedInitial = [];
+                for (var i = 0; i < thisComponent.state.customerAddresses.length; i++) {
+                    addressIsSelectedInitial[i] = false;
+                }
+                thisComponent.setState({
+                    addressIsSelected: addressIsSelectedInitial
+                })
+            }
+        });
+        xhrDataAddress.open("GET", this.props.baseUrl + '/address/customer');
+        xhrDataAddress.setRequestHeader('Authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+        xhrDataAddress.setRequestHeader("Content-Type", "application/json");
+        xhrDataAddress.send();
+    }
+
+ 
+    /*Existing address and adding new address*/
     tabChangeHandler = (event, value) => {
         this.setState({ value });
-    }
-    /* This method is used to set the state value in the State Select list. */
-    statesChangeHandler = event => {
-        this.setState({ state_uuid: event.target.value });
-    }
-
-    /* This method is used to set the value on change of the Coupon field. */
-    inputcouponcodeChangeHandler = (e) => {
-        this.setState({ couponcode: e.target.value });
-    }
-    /* This method is used to set the value on change of the City field. */
-    inputCityChangeHandler = (e) => {
-        this.setState({ city: e.target.value });
-    }
-
-    /* This method is used to set the value of the Pincode field. */
-    inputPincodeChangeHandler = (e) => {
-        this.setState({ pincode: e.target.value });
-    }
-
-    /* This method is used to select an payment method. */
-    paymentMethodChangeHandler = (e) => {
-        this.setState({ payment_id: e.target.value });
-    };
-
-    /* This method is used to set the value on change of the Flat / Building No. */
-    inputflatnoChangeHandler = (e) => {
-        this.setState({ flatno: e.target.value });
-    }
-
-    /* This method is used to select an address from the ADDRESS tab. */
-    addressClickHandler = (addressId, indexNew) => {
-
-        this.state.addressList.map((element, index) => {
-            if (this.myRef[index].current != null) {
-                this.myRef[index].current.style.border = "";
-                this.myRef[index].current.style.borderColor = "";
-                this.myRef[index].current.style.boxShadow = "";
-            }
-            if (this.myRefNew[index].current != null) {
-                this.myRefNew[index].current.style.color = "";
-            }
-        })
-        if (this.myRef[indexNew].current != null) {
-            this.myRef[indexNew].current.style.border = "outset";
-            this.myRef[indexNew].current.style.borderColor = "red";
-            this.myRef[indexNew].current.style.boxShadow = "unset";
-        }
-        if (this.myRefNew[indexNew].current != null) {
-            this.myRefNew[indexNew].current.style.color = "green";
-        }
-        this.setState({
-            address_id: addressId,
-            index: indexNew
-        });
-    }
-
-    /* This method is used to set the value on change of the Locality field. */
-    inputLocalityChangeHandler = (e) => {
-        this.setState({ locality: e.target.value });
-    }
-
-    /* This method is used to move to the previous Step.*/
-    handlePrev = () => {
-        const { stepIndex } = this.state;
-        if (stepIndex > 0) {
-            this.setState({ stepIndex: stepIndex - 1 });
-        }
-    };
-
-    handleNext = () => {
-        if (this.state.address_id !== "" && this.state.address_id !== null) {
-            let newstepIndex = this.state.stepIndex + 1;
+        if (value === 1) {
+            // New Address tab is selected.
             this.setState({
-                finished: this.state.stepIndex >= 1,
-                stepIndex: newstepIndex
-            });
-        }
-    };
-
-    /* This method is used to close the popup. */
-    handleClose = () => {
-        this.setState({
-            snackOpen: false,
-            snackMessage: ""
-        })
-    };
-
-    /* This methos is used to reset. */
-    handleReset = () => {
-        const { stepIndex } = this.state;
-        if (stepIndex > 0) {
-            this.setState({ stepIndex: 0 });
-        }
-    };
-
-
-    /* This method is used to get all the states.. */
-    getStatesList = () => {
-        let that = this;
-        let url = `${constants.statesUrl}`;
-        return fetch(url, {
-            method: 'GET',
-        }).then((response) => {
-            return response.json();
-        }).then((jsonResponse) => {
-            that.setState({
-                statesList: jsonResponse.states
-            });
-        }).catch((error) => {
-            console.log('error fetching States List', error);
-        });
-    }
-
-    /* This method is used to save an address of the logged in user. */
-    saveAddressClickHandler = () => {
-        this.state.flatno === "" ? this.setState({ flatnoRequired: "dispBlock" }) : this.setState({ flatnoRequired: "dispNone" });
-        this.state.locality === "" ? this.setState({ localityRequired: "dispBlock" }) : this.setState({ localityRequired: "dispNone" });
-        this.state.city === "" ? this.setState({ cityRequired: "dispBlock" }) : this.setState({ cityRequired: "dispNone" });
-        this.state.state_uuid === "" ? this.setState({ stateListRequired: "dispBlock" }) : this.setState({ stateListRequired: "dispNone" });
-        this.state.pincode === "" ? this.setState({ pincodeRequired: "dispBlock" }) : this.setState({ pincodeRequired: "dispNone" });
-
-        if ((this.state.flatno === "") || (this.state.locality === "") || (this.state.city === "") || (this.state.state_uuid === "") || (this.state.pincode === "")) { return; }
-
-        var pinValidation = /^\d{6}$/;
-
-        if (pinValidation.test(String(this.state.pincode)) === false) {
-            this.setState({
-                pinValid: "dispBlock",
-                pinCheck: false
+                buildingNo: '',
+                locality: '',
+                city: '',
+                addressState: '',
+                pincode: '',
+                buildingNoRequired: 'dispNone',
+                stateRequired: 'dispNone',
+                localityRequired: 'dispNone',
+                pincodeRequired: 'dispNone',
+                invalidPincode: 'dispNone',
+                cityRequired: 'dispNone', 
             })
         }
+    }
+
+    /*Checkbox for payment is selected */
+    handleChangePayment = event => {
+        this.setState({
+            selectedPaymentId: event.target.value
+        })
+    };
+
+    
+
+    /*Stop submission of form*/
+    handleSubmit = (event) => {
+        event.preventDefault();
+    }
+
+ /*When a address is selected */
+ addressSelectionHandler = (index) => {
+    var addressIsSelectedChange = this.state.addressIsSelected;
+    for (var j = 0; j < this.state.addressIsSelected.length; j++) {
+        if (j === index) {
+            addressIsSelectedChange[j] = true;
+        } else {
+            addressIsSelectedChange[j] = false;
+        }
+    }
+    this.setState({
+        addressIsSelected: addressIsSelectedChange,
+        selectedAddress: true,
+        selectedAddressId: this.state.customerAddresses[index].id
+    })
+}
+
+
+    /*Selected/entered input value*/
+    handleChange = name => event => {
+        this.setState({
+            [name]: event.target.value,
+        });
+    }
+
+   
+
+     /*Next tab*/
+     handleNext = (index) => {
+        var prevActiveStep = this.state.activeStep + 1;      
+        if (index === 0) {
+            if (this.state.selectedAddress === true) {
+                this.setState({ activeStep: prevActiveStep })
+            }
+        } else if (index === 1) {
+            if (this.state.selectedPaymentId !== '') {
+                this.setState({ activeStep: prevActiveStep })
+            }
+        }
+    };
+
+
+
+    /*Get step content */
+    getStepContent(step) {
+        const { classes } = this.props;
+        switch (step) {
+            case 0:
+                return <React.Fragment>
+                    <Tabs className='address-tabs' value={this.state.value} onChange={this.tabChangeHandler}>
+                        <Tab label='EXISTING ADDRESS' />
+                        <Tab label='NEW ADDRESS' />
+                    </Tabs>
+                    {this.state.value === 0 && this.state.customerAddresses.length !== 0 &&
+                        <TabContainer>
+                            <div>
+                                <GridList className={classes.gridList} cols={this.state.cols} spacing={2} cellHeight={"auto"}>
+                                    {this.state.customerAddresses.map((address, index) => (
+                                        <GridListTile key={address.id} className={(this.state.addressIsSelected[index] === true ? classes.coloredBorder : classes.noBorder)}
+                                            onClick={() => this.addressSelectionHandler(index)}>
+                                            <div className='grid-address'>
+                                                <Typography variant="subtitle1" component="p">{address.flat_building_name}</Typography>
+                                                <Typography variant="subtitle1" component="p">{address.locality}</Typography>
+                                                <Typography variant="subtitle1" component="p">{address.city}</Typography>
+                                                <Typography variant="subtitle1" component="p">{address.state.state_name}</Typography>
+                                                <Typography variant="subtitle1" component="p">{address.pincode}</Typography>
+                                                <div className={classes.buttonAlign}>
+                                                    <IconButton className={this.state.addressIsSelected[index] !== true ? classes.grey : classes.green}
+                                                        aria-label="checkCircle" onClick={() => this.addressSelectionHandler(index)}>
+                                                        <CheckCircleIcon />
+                                                    </IconButton>
+                                                </div>
+                                            </div>
+                                        </GridListTile>
+                                    ))}
+                                </GridList>
+                            </div>
+                        </TabContainer>
+                    }
+                    {this.state.value === 0 && this.state.customerAddresses.length === 0 &&
+                        <TabContainer>
+                            <Typography variant="body1" className={classes.noAddress}>There are no saved addresses! You can save an address using the &apos;New Address&apos; tab or using your &lsquo;Profile&rsquo; menu option.</Typography>
+                        </TabContainer>
+                    }
+                    {/*Save Address form */}
+                    <form onSubmit={this.handleSubmit}>
+                        {this.state.value === 1 &&
+                            <TabContainer>
+                                <FormControl className={classes.formControl} required>
+                                    <InputLabel htmlFor='buildingNo'>Flat / Building No.</InputLabel>
+                                    <Input id='buildingNo' type='text' onChange={this.handleChange('buildingNo')} value={this.state.buildingNo} fullWidth />
+                                    <FormHelperText className={this.state.buildingNoRequired}>
+                                        <span className='red'>required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                <FormControl className={classes.formControl} required>
+                                    <InputLabel htmlFor='locality'>Locality</InputLabel>
+                                    <Input id='locality' type='text' onChange={this.handleChange('locality')} value={this.state.locality} fullWidth />
+                                    <FormHelperText className={this.state.localityRequired}>
+                                        <span className='red'>required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                <FormControl className={classes.formControl} required>
+                                    <InputLabel htmlFor='city'>City</InputLabel>
+                                    <Input id='city' type='text' onChange={this.handleChange('city')} value={this.state.city} fullWidth />
+                                    <FormHelperText className={this.state.cityRequired}>
+                                        <span className='red'>required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                {/*Shows the list of all states*/}
+                                <FormControl className={classes.formControl} required>
+                                    <InputLabel htmlFor='addressState'>State</InputLabel>
+                                    <Select
+                                        value={this.state.addressState}
+                                        onChange={this.handleChange('addressState')}
+                                        inputProps={{
+                                            name: 'addressState',
+                                            id: 'addressState',
+                                        }} fullWidth>
+                                        {this.state.states.map(locState =>
+                                            <MenuItem key={locState.id} value={locState.id}>{locState.state_name}</MenuItem>
+                                        )}
+                                    </Select>
+                                    <FormHelperText className={this.state.stateRequired}>
+                                        <span className='red'>required</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                {/*Pincode is empty/not 6 digits, Error message*/}
+                                <FormControl className={classes.formControl} required>
+                                    <InputLabel htmlFor='pincode'>Pincode</InputLabel>
+                                    <Input id='pincode' type='text' onChange={this.handleChange('pincode')} value={this.state.pincode} fullWidth />
+                                    <FormHelperText className={this.state.pincodeRequired}>
+                                        <span className='red'>required</span>
+                                    </FormHelperText>
+                                    <FormHelperText className={this.state.invalidPincode}>
+                                        <span className='red'>Pincode must contain only numbers and must be 6 digits long</span>
+                                    </FormHelperText>
+                                </FormControl>
+                                <br />
+                                <br />
+                                <Button variant="contained" color="secondary" onClick={this.saveAddressClickHandler}>
+                                    Save Address
+                            </Button>
+                            </TabContainer>
+                        }
+                    </form>
+                </React.Fragment >;
+            case 1:
+                return (
+                    <FormControl component="fieldset">
+                        <FormLabel>Select Mode of Payment</FormLabel>
+                        <RadioGroup defaultValue={this.state.paymentModes.payment_name} aria-label="paymentModes" name="paymentModes" id='handleChangePayment' onChange={this.handleChangePayment}>
+                            {this.state.paymentModes.map((payment) => (
+                                <FormControlLabel key={payment.id} value={payment.id} control={<Radio />} label={payment.payment_name} checked={this.state.selectedPaymentId === payment.id} />))
+                            }
+                        </RadioGroup>
+                    </FormControl>)
+            default:
+                return 'Unknown step';
+        }
+    }
+
+   
+   /* Click of 'Change' Button */
+   handleReset = () => {
+    this.setState({ activeStep: 0 });
+};
+
+
+    /* Previous step */
+    handleBack = () => {
+        var prevActiveStep = this.state.activeStep - 1;
+        this.setState({ activeStep: prevActiveStep })
+    };
+
+ 
+    /*All the elements on the page are rendered, it is used to set state for cartItems*/
+    componentDidMount() {
+        // Update the cart total amount
+        if (this.state.cartItems) {
+            let cartTotalAmount = 0;
+            this.state.cartItems.forEach(cartItem => {
+                cartTotalAmount += cartItem.totalItemPrice;
+            });
+            // Total amount without discount.
+            this.setState({
+                cartTotalAmount: cartTotalAmount,
+                totalAmountWithoutDiscount: cartTotalAmount
+            })
+        }        
+        window.addEventListener('resize', this.updateGridViewCols);
+    }
+
+   /* Three addresses in large view and two in small view */
+   updateGridViewCols = () => {
+    if (window.innerWidth <= 650) {
+        this.setState({ cols: 2 });
+    } else {
+        this.setState({ cols: 3 });
+    }
+}
+
+    /* When the component is about to unmount */
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateGridViewCols);
+    }
+
+ 
+
+        /* Show snackbar error message if it is not entered or an invalid coupon */
+        applyButtonHandler = () => {        
+            if (this.state.couponName === '') {
+                this.setState({
+                    showSnackbar: true,
+                    snackBarMsg: 'Please provide a Coupon Code to apply!'
+                });
+                return;
+            }       
+            let that = this;        
+            let data = null;
+            let xhrCoupon = new XMLHttpRequest();
+            xhrCoupon.addEventListener("readystatechange", function () {           
+                if (this.readyState === 4 && this.status === 200) {                
+                    that.setState({
+                        discountPercentage: JSON.parse(this.response).percent
+                    });               
+                    let discountCal = (that.state.totalAmountWithoutDiscount * that.state.discountPercentage) / 100;
+                    let priceAfterDiscount = that.state.totalAmountWithoutDiscount - discountCal;
+                    that.setState({
+                        subTotal: that.state.totalAmountWithoutDiscount,
+                        discount: discountCal,
+                        cartTotalAmount: priceAfterDiscount,
+                        couponId: JSON.parse(this.response).id,
+                        showSnackbar: true,
+                        snackBarMsg: 'Coupon applied Successfully!',
+                    });
+                }
+                else if (this.readyState === 4 && this.status !== 200) {                
+                    that.setState({
+                        showSnackbar: true,
+                        snackBarMsg: JSON.parse(this.response).message,
+                        netAmount: that.state.totalAmountWithoutDiscount,
+                        discountPercentage: 0,
+                        discount: 0,
+                        couponId: '',
+                        cartTotalAmount: that.state.totalAmountWithoutDiscount
+                    });
+    
+                }
+            });
+            xhrCoupon.open("GET", this.props.baseUrl + '/order/coupon/' + this.state.couponName);
+            xhrCoupon.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+            xhrCoupon.setRequestHeader("Content-Type", "application/json");
+            xhrCoupon.send(data);
+    
+        }
+
+
+
+    /* When coupon code is changed  */
+    couponChangeHandler = (event) => {
+        this.setState({ couponName: event.target.value });
+    }
+
+
+
+ /* Go to home after placing the order successfully */
+ delayRedirect = (event) => {
+    const { history: { push } } = this.props;
+    setTimeout(() => push('/'), 10000);
+}
+
+
+    /* When place order button is clicked */
+    checkoutClickHandler = (event) => {        
+        if (this.state.selectedAddressId !== '' && this.state.selectedPaymentId !== '') {
+            let that = this;
+            let xhrCheckOut = new XMLHttpRequest();
+            var itemsInCart = [];
+            var saveOrderRequest = null;
+            for (var k = 0; k < this.state.cartItems.length; k++) {
+                var Item = {
+                    "item_id": this.state.cartItems[k].id,
+                    "price": this.state.cartItems[k].price,
+                    "quantity": this.state.cartItems[k].quantity
+                }
+                itemsInCart[k] = Item;
+            }
+            /* json request for order Request */
+            if (this.state.couponName && this.state.discount !== 0) {
+                saveOrderRequest = JSON.stringify({
+                    "address_id": this.state.selectedAddressId,
+                    "bill": this.state.cartTotalAmount,
+                    "coupon_id": this.state.couponId,
+                    "discount": this.state.discount,
+                    "item_quantities": itemsInCart,
+                    "payment_id": this.state.selectedPaymentId,
+                    "restaurant_id": this.state.restaurantID
+                });
+            } else {
+                saveOrderRequest = JSON.stringify({
+                    "address_id": this.state.selectedAddressId,
+                    "bill": this.state.cartTotalAmount,
+                    "item_quantities": itemsInCart,
+                    "payment_id": this.state.selectedPaymentId,
+                    "restaurant_id": this.state.restaurantID,
+                });
+            }
+            xhrCheckOut.addEventListener("readystatechange", function () {                
+                if (this.readyState === 4 && this.status === 201) {                    
+                    that.setState({
+                        showSnackbar: true,
+                        snackBarMsg: 'Order placed successfully! Your order ID is ' + JSON.parse(this.response).id + '.'
+                    });                    
+                    that.delayRedirect(event);
+                }
+                else if (this.readyState === 4 && this.status !== 201) {
+                    that.setState({
+                        showSnackbar: true,
+                        snackBarMsg: 'Unable to place your order! Please try again!'
+                    });
+                }
+            });
+            xhrCheckOut.open("POST", this.props.baseUrl + '/order');
+            xhrCheckOut.setRequestHeader('authorization', 'Bearer ' + sessionStorage.getItem('access-token'));
+            xhrCheckOut.setRequestHeader("Content-Type", "application/json");
+            xhrCheckOut.send(saveOrderRequest);
+        }  
         else {
             this.setState({
-                pinValid: "dispNone",
-                pinCheck: true
-            })
-        }
-
-        if (this.state.pinCheck === true) {
-            let saveAddressData = JSON.stringify({
-                "city": this.state.city,
-                "flat_building_name": this.state.flatno,
-                "locality": this.state.locality,
-                "pincode": this.state.pincode,
-                "state_uuid": this.state.state_uuid
-            });
-            let xhrSaveAddress = new XMLHttpRequest();
-            let that = this;
-            xhrSaveAddress.addEventListener("readystatechange", function () {
-                if (this.readyState === 4 && this.status === 201) {
-                    that.setState({
-                        saveAddress: true,
-                        snackOpen: true,
-                        snackMessage: "Address saved successfully"
-                    });
-                    that.getExistingAddress();
-                }
-                if (this.readyState === 4 && this.status === 400) {
-                    that.setState({
-                        saveAddressErrordisp: "dispBlock",
-                        saveAddressErrormessage: JSON.parse(this.responseText).message,
-                        snackOpen: true,
-                        snackMessage: "Unable to save address"
-                    });
-                }
-                if (this.readyState === 4 && (this.status !== 400 && this.status !== 201)) {
-                    that.setState({
-                        saveAddressErrordisp: "dispBlock",
-                        saveAddressErrormessage: JSON.parse(this.responseText).error,
-                        snackOpen: true,
-                        snackMessage: "Unable to save address"
-                    });
-                }
-            });
-
-            let url = `${constants.saveAddressUrl}`;
-
-            xhrSaveAddress.open("POST", url);
-            xhrSaveAddress.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("access-token"));
-            xhrSaveAddress.setRequestHeader("Content-Type", "application/json");
-            xhrSaveAddress.setRequestHeader("Cache-Control", "no-cache");
-            xhrSaveAddress.send(saveAddressData);
-        }
-    }
-
-    /* This method is used to get all the payment methods from the database. */
-    getPaymentMethods = () => {
-        let that = this;
-        let url = `${constants.paymentMethodUrl}`;
-        return fetch(url, {
-            method: 'GET',
-        }).then((response) => {
-            return response.json();
-        }).then((jsonResponse) => {
-            that.setState({
-                paymentMethods: jsonResponse.paymentMethods
-            });
-        }).catch((error) => {
-            console.log('error fetching paymentMethods', error);
-        });
-    }
-
-    /* This method is used to get all the addresses of the logged in user. */
-    getExistingAddress = () => {
-        let that = this;
-        let url = `${constants.addressUrl}`;
-        return fetch(url, {
-            method: 'GET',
-            headers: {
-                'authorization': 'Bearer ' + sessionStorage.getItem("access-token")
-            }
-        }).then((response) => {
-            return response.json();
-        }).then((jsonResponse) => {
-            if (jsonResponse.addresses === null) {
-                this.setState({ message: "There are no saved addresses! You can save an address using the 'New Address' tab or using your 'Profile' menu option." })
-            }
-            if (jsonResponse.addresses !== null) {
-                this.setState({ message: "" })
-            }
-            that.setState({
-                addressList: jsonResponse.addresses
-            });
-        }).catch((error) => {
-            console.log('error fetching addressList', error);
-        });
-    }
-
-
-    renderStepActions(step) {
-        return (
-            <div style={{ margin: '12px 0' }}>
-                <Button
-                    disabled={this.state.stepIndex === 0}
-                    onClick={this.handlePrev}
-                    className={classes.button}
-                >
-                    Back
-                  </Button>
-                <Button
-                    disabled={this.state.value === 1}
-                    variant="contained"
-                    color="primary"
-                    onClick={this.handleNext}
-                    className={classes.button}
-                >
-                    {this.state.stepIndex === 1 ? 'Finish' : 'Next'}
-                </Button>
-            </div>
-        );
-    }
-
-    /* This method is used to place an order. */
-    onPlaceOrderClickHandler = () => {
-        let item_quantities = []
-        if (this.props.location.state.items_list_new.length > 0) {
-            this.props.location.state.items_list_new.forEach(function (item, index) {
-                let itemNew = {}
-                itemNew.item_id = item.id;
-                itemNew.price = item.price;
-                itemNew.quantity = item.count;
-                item_quantities.push(itemNew);
-            }, this);
-        }
-
-        let saveOrderData = JSON.stringify({
-            "address_id": this.state.address_id,
-            "bill": this.state.newTotal,
-            "coupon_id": this.state.coupon_id,
-            "discount": this.state.discount,
-            "item_quantities": item_quantities,
-            "payment_id": this.state.payment_id,
-            "restaurant_id": this.props.location.state.restaurant_id
-        });
-        let xhrSaveOrder = new XMLHttpRequest();
-        let that = this;
-        xhrSaveOrder.addEventListener("readystatechange", function () {
-            if (this.readyState === 4 && this.status === 201) {
-                that.setState({
-                    saveOrder: true,
-                    snackOpen: true,
-                    snackMessage: "Order placed successfully! Your order ID is " + JSON.parse(this.responseText).id
-                });
-            }
-            if (this.readyState === 4 && this.status === 400) {
-                that.setState({
-                    saveAddressErrordisp: "dispBlock",
-                    saveAddressErrormessage: JSON.parse(this.responseText).message,
-                    snackOpen: true,
-                    snackMessage: "Unable to place your order! Please try again!"
-                });
-            }
-            if (this.readyState === 4 && (this.status !== 400 && this.status !== 201)) {
-                that.setState({
-                    saveAddressErrordisp: "dispBlock",
-                    saveAddressErrormessage: JSON.parse(this.responseText).error,
-                    snackOpen: true,
-                    snackMessage: "Unable to place your order! Please try again!"
-                });
-            }
-        });
-
-        let url = `${constants.orderUrl}`;
-        xhrSaveOrder.open("POST", url);
-        xhrSaveOrder.setRequestHeader("authorization", "Bearer " + sessionStorage.getItem("access-token"));
-        xhrSaveOrder.setRequestHeader("Content-Type", "application/json");
-        xhrSaveOrder.setRequestHeader("Cache-Control", "no-cache");
-        xhrSaveOrder.send(saveOrderData);
-    }
-
-    /* This method is used to apply a coupon when clicked on APPLY button. */
-    applycouponcodeClickHandler = () => {
-        let value = this.state.couponcode;
-        if (value !== null || value !== "") {
-            let url = `${constants.couponUrl}/${value}`;
-            return fetch(url, {
-                method: 'GET',
-                headers: {
-                    'authorization': 'Bearer ' + sessionStorage.getItem("access-token")
-                }
-            }).then((response) => {
-                return response.json();
-            }).then((jsonResponse) => {
-                if (jsonResponse.percent === null || jsonResponse.percent === "") {
-                    this.setState({
-                        snackOpen: true,
-                        snackMessage: "No coupon with the given name",
-                        newTotal: this.props.location.state.total,
-                        subTotal: this.props.location.state.total,
-                        discount: 0
-                    })
-                    return;
-                }
-                if (jsonResponse.percent !== null || jsonResponse.percent !== "") {
-                    this.setState({
-                        snackOpen: false,
-                        snackMessage: "",
-                        percent: jsonResponse.percent,
-                        coupon_id: jsonResponse.id
-                    })
-                    let newsubTotal = this.props.location.state.total;
-                    let newDiscount = (this.state.newTotal * this.state.percent) / 100;
-                    let newTotalval = this.state.newTotal - newDiscount;
-                    this.setState({
-                        subTotal: newsubTotal,
-                        discount: newDiscount,
-                        newTotal: newTotalval
-                    })
-                }
-
-            }).catch((error) => {
-                console.log('error coupon data', error);
+                showSnackbar: true,
+                snackBarMsg: 'Please select Delivery and Payment Option before Placing an Order !'
             });
         }
     }
+
+   
+
+  /* When logout is clicked in header and successful logout */
+  updateLoginStatus = () => {
+    this.setState({ isUserLoggedIn: false });
+}
+
+    /* Snackbar */
+    handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        } 
+        this.setState({ showSnackbar: false, snackBarMsg: '' });
+    }
+
+  
 
     render() {
-        const { finished } = this.state;
+        const { classes } = this.props;
         return (
             <div>
-                <Header
-                    screen={"Checkout"}
-                    history={this.props.history} />
-                <div className="main-div">
-                    <div style={{ width: '60%' }}>
-                        <Stepper activeStep={this.state.stepIndex} orientation="vertical">
-                            <Step>
-                                <StepLabel>Delivery</StepLabel>
-                                <StepContent>
-                                    <Typography component={'div'} variant={'body2'}>
-                                        <Tabs className="tabs" value={this.state.value} onChange={this.tabChangeHandler}>
-                                            <Tab label="EXISTING ADDRESS" />
-                                            <Tab label="NEW ADDRESS" />
-                                        </Tabs>
-                                        {this.state.message}
-                                    </Typography>
-                                    {this.state.value === 0 &&
-                                        <TabContainer>
-                                            <br />
-                                            <div className={classes.gridListAddresses}>
-                                                <GridList cols={3} className={classes.gridList}>
-                                                    {this.state.addressList != null && this.state.addressList.map((address, index) => (
-                                                        this.myRef[index] = React.createRef(),
-                                                        this.myRefNew[index] = React.createRef(),
-                                                        <GridListTile
-                                                            style={this.state.style}
-                                                            key={address.id} ref={this.myRef[index]}>
-                                                            <div>{address.flat_building_name}</div>
-                                                            <div>{address.locality}</div>
-                                                            <div>{address.city}</div>
-                                                            <div>{address.state.state_name}</div>
-                                                            <div>{address.pincode}</div>
-                                                            <IconButton style={this.state.styleIcon} ref={this.myRefNew[index]} onClick={() => this.addressClickHandler(address.id, index)}>
-                                                                <CheckCircleIcon className="tickIcon" />
-                                                            </IconButton>
-                                                        </GridListTile>
-
-                                                    ))}
-                                                </GridList>
-                                            </div>
-                                            {/* <div>{this.state.message}</div> */}
-                                        </TabContainer>
-                                    }
-
-                                    {this.state.value === 1 &&
-                                        <TabContainer>
-                                            <br />
-                                            <FormControl style={{ marginBottom: '20px' }} required>
-                                                <InputLabel htmlFor="Flat / Building No.">Flat / Building No.</InputLabel>
-                                                <Input id="flatno" type="text" flatno={this.state.flatno} onChange={this.inputflatnoChangeHandler} />
-                                                <FormHelperText className={this.state.flatnoRequired}>
-                                                    <span className="red">required</span>
-                                                </FormHelperText>
-                                            </FormControl>
-                                            <br />
-                                            <FormControl style={{ marginBottom: '20px' }} required>
-                                                <InputLabel htmlFor="Locality">Locality</InputLabel>
-                                                <Input id="locality" type="text" locality={this.state.locality} onChange={this.inputLocalityChangeHandler} />
-                                                <FormHelperText className={this.state.localityRequired}>
-                                                    <span className="red">required</span>
-                                                </FormHelperText>
-                                            </FormControl>
-                                            <br />
-                                            <FormControl style={{ marginBottom: '20px' }} required>
-                                                <InputLabel htmlFor="City">City</InputLabel>
-                                                <Input id="city" type="text" city={this.state.city} onChange={this.inputCityChangeHandler} />
-                                                <FormHelperText className={this.state.cityRequired}>
-                                                    <span className="red">required</span>
-                                                </FormHelperText>
-                                            </FormControl>
-                                            <br />
-                                            <FormControl style={{ marginBottom: '20px' }} required>
-                                                <InputLabel htmlFor="stateList">State</InputLabel>
-                                                <Select
-                                                    value={this.state.state_uuid}
-                                                    onChange={this.statesChangeHandler}
-                                                    style={{ width: '200px' }}
+                {/* Home page on logout */}
+                {!this.state.isUserLoggedIn && <Redirect to='/' />}                
+                <Header pageId='checkout' baseUrl={this.props.baseUrl} updateLoginStatus={this.updateLoginStatus} />
+                <div className='checkout-container'>
+                    <div className="stepper-section">
+                        <Stepper activeStep={this.state.activeStep} orientation="vertical">
+                            {this.state.steps.map((label, index) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                    <StepContent>
+                                        {this.getStepContent(index)}
+                                        <div className={classes.actionsContainer}>
+                                            <div className={classes.buttonMargin}>
+                                                <Button
+                                                    disabled={this.state.activeStep === 0}
+                                                    onClick={this.handleBack}
+                                                    className={classes.button}
                                                 >
-                                                    {this.state.statesList.map(st => (
-                                                        <MenuItem key={"state" + st.id} value={st.id}>
-                                                            {st.state_name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                                <FormHelperText className={this.state.stateListRequired}>
-                                                    <span className="red">required</span>
-                                                </FormHelperText>
-                                            </FormControl>
-
-                                            <br />
-                                            <FormControl style={{ marginBottom: '20px' }} required>
-                                                <InputLabel htmlFor="Pincode">Pincode</InputLabel>
-                                                <Input id="pincode" type="text" pincode={this.state.pincode} onChange={this.inputPincodeChangeHandler} />
-                                                <FormHelperText className={this.state.pincodeRequired}>
-                                                    <span className="red">required</span>
-                                                </FormHelperText>
-
-                                                <FormHelperText className={this.state.pinValid}>
-                                                    <span className="red">Pincode must contain<br /> only numbers and must<br /> be 6 digits long</span>
-                                                </FormHelperText>
-                                            </FormControl>
-                                            <br />
-                                            <br />
-                                            <Button variant="contained" color="secondary" onClick={this.saveAddressClickHandler}>SAVE ADDRESS</Button>
-                                        </TabContainer>
-                                    }
-                                    {this.renderStepActions(0)}
-                                </StepContent>
-
-                            </Step>
-                            <Step>
-                                <StepLabel>Payment</StepLabel>
-                                <StepContent>
-                                    <FormControl>
-                                        <FormLabel>Select Mode of Payment</FormLabel>
-                                        <RadioGroup aria-label="payment" name="payment1" value={this.state.payment_id} onChange={this.paymentMethodChangeHandler}>
-                                            {
-                                                this.state.paymentMethods.map(method => (
-                                                    <FormControlLabel key={"payment" + method.id} value={method.id} control={<Radio />} label={method.payment_name} />
-                                                )
-                                                )
-                                            }
-                                        </RadioGroup>
-
-                                    </FormControl>
-                                    {this.renderStepActions(1)}
-                                </StepContent>
-                            </Step>
+                                                    Back
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    onClick={() => this.handleNext(index)}
+                                                    className={classes.button}
+                                                >
+                                                    {this.state.activeStep === this.state.steps.length - 1 ? 'Finish' : 'Next'}
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    </StepContent>
+                                </Step>
+                            ))}
                         </Stepper>
-                        {finished && (
+                        {this.state.activeStep === this.state.steps.length && this.state.selectedPaymentId !== '' && (
                             <Paper square elevation={0} className={classes.resetContainer}>
-                                <Typography style={{ padding: '2%' }}><b> View the summary & place your order now!</b></Typography>
-                                <Button style={{ padding: '2%' }} onClick={this.handleReset} className={classes.button}>
-                                    CHANGE
-          </Button>
+                                <Typography variant="subtitle1" component="p">View the summary and place your order now!</Typography>
+                                <Button onClick={this.handleReset} className={classes.button}>
+                                    Change
+                        </Button>
                             </Paper>
-
-                        )
-                        }
+                        )}
                     </div>
-
-                    <div style={{ width: '39%', marginTop: '20px', marginRight: '5px', marginBottom: '10px' }}>
-                        <Card className="cardStyle">
+                    <div className='checkout-cart-container'>
+                        <Card variant='outlined' className='checkout-cart-card'>
+                            {/* Card header with Summary text */}
+                            <CardHeader
+                                title='Summary'
+                                titleTypographyProps={{
+                                    variant: 'h5'
+                                }}>
+                            </CardHeader>
                             <CardContent>
-                                <br />
-                                <div style={{ marginBottom: '10px', fontSize: '30px', padding: '2%' }}><b>Summary</b></div><br />
-                                <div style={{ marginBottom: '10px', fontSize: '20px', padding: '2%' }}>{this.props.location.state.restaurant_name}</div><br />
-                                <div style={{ marginBottom: '20px', padding: '2%', lineHeight: '1.5' }}>
-                                    {this.props.location.state.items_list_new.map(it => (
-                                        <div className="item-details" key={it.name}>
-                                            <span style={{ align: 'left', width: "11%" }}>{it.item_type === "VEG" ? (<FontAwesomeIcon icon={faStopCircle} style={{ color: "green" }}></FontAwesomeIcon>) : (<FontAwesomeIcon icon={faStopCircle} style={{ color: "red" }}></FontAwesomeIcon>)}</span>
-                                            <span style={{ align: 'left', width: "33%", color: "grey" }}>{titleCase(it.name)}</span>
+                                <Typography variant='h6' component='h6' gutterBottom className='checkout-restaurant-name'>
+                                    {this.state.restaurantName}
+                                </Typography>
+                                {this.state.cartItems.map(cartItem =>
+                                    <div className='checkout-menu-item-section' key={'checkout' + cartItem.id}>
+                                        {/*Stop circle O based color red(non veg)/green(veg)
+                                         */}
+                                        {'VEG' === cartItem.item_type && <FontAwesomeIcon icon={faStopCircle} className='fa-circle-green' />}
+                                        {'NON_VEG' === cartItem.item_type && <FontAwesomeIcon icon={faStopCircle} className='fa-circle-red' />}
 
-                                            <span style={{ align: 'left', width: "11%", color: "grey" }}>{it.count}</span>
-
-                                            <span style={{ align: 'left', width: "33%", color: "grey" }}><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{it.price}</span>
+                                        <Typography className={classes.cartMenuItem}>
+                                            <span className='checkout-menu-item color-gray'>{cartItem.item_name}</span>
+                                        </Typography>
+                                        {/* Show the quantity of the item */}
+                                        <section className='checkout-item-quantity-section color-gray'>
+                                            <span>{cartItem.quantity}</span>
+                                        </section>
+                                        {/* Rupee symbol and the price of the item */}
+                                        <span className='checkout-item-price wrap-white-space color-gray'>
+                                            <FontAwesomeIcon icon={faRupeeSign} className='fa-rupee' />
+                                            {cartItem.totalItemPrice.toFixed(2)}
+                                        </span>
+                                    </div>
+                                )}
+                                {/* Coupon section for the user to apply any valid coupons */}
+                                <div className='coupon-area'>
+                                    <div className='coupon-content'>
+                                        <TextField id="coupon-code" label="Coupon Code" variant="filled" onChange={this.couponChangeHandler} className={classes.textField} placeholder='Ex: FLAT30' />
+                                        <Button variant="contained" onClick={this.applyButtonHandler} className={classes.applyBtn}>
+                                            APPLY
+                                        </Button>
+                                    </div>
+                                    {/* When the coupon is valid and applied successfully */}
+                                    {this.state.discountPercentage !== 0 &&
+                                        <div className="discount-text-container">
+                                            <div className="discount-text wrap-white-space">
+                                                <Typography className='discount-item-text-checkout'>Sub Total</Typography>
+                                                <span className='cart-item-price-checkout wrap-white-space'>
+                                                    <FontAwesomeIcon icon={faRupeeSign} className='fa-rupee' />
+                                                    {this.state.subTotal.toFixed(2)}
+                                                </span>
+                                            </div>
+                                            <div className="discount-text">
+                                                <Typography className='discount-item-text-checkout wrap-white-space'>Discount</Typography>
+                                                <span className='cart-item-price-checkout wrap-white-space'>
+                                                    <FontAwesomeIcon icon={faRupeeSign} className='fa-rupee' />
+                                                    {this.state.discount.toFixed(2)}
+                                                </span>
+                                            </div>
                                         </div>
-
-                                    ))}
+                                    }
                                 </div>
-                                <div style={{ marginBottom: '20px', padding: '2%' }}>
-                                    <span>
-                                        <FormControl style={{ backgroundColor: 'rgb(241, 231, 211)' }}>
-                                            <InputLabel htmlFor="Coupon" style={{ padding: '2%'}}>Coupon Code</InputLabel>
-                                            <Input id="couponcode" type="text" couponcode={this.state.couponcode} onChange={this.inputcouponcodeChangeHandler} />
-                                            <FormHelperText className={this.state.couponError}>
-                                                <span className="red">required</span>
-                                            </FormHelperText>
-                                        </FormControl>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <Button className={classes.button} variant="contained" onClick={() => this.applycouponcodeClickHandler()}>APPLY</Button><br />
-                                        {this.state.percent > 0 && <div><br />
-                                            <div>Sub Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.subTotal}</div>
-                                            <br />
-                                            <div>Discount &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;{this.state.discount}</div>
-
-
-                                        </div>
-                                        }
+                                <Divider />
+                                {/* Total amount of the cart, price of all items together */}
+                                <div className='checkout-total-amount'>
+                                    <Typography>
+                                        <span className='bold'>Net Amount</span>
+                                    </Typography>
+                                    <span className='bold wrap-white-space'>
+                                        <FontAwesomeIcon icon={faRupeeSign} className='fa-rupee' />
+                                        {this.state.cartTotalAmount.toFixed(2)}
                                     </span>
                                 </div>
-                                <br />
-
-                                <Divider variant="middle" />
-                                <div className="item-details">
-                                    <Divider variant="middle" />
-                                    <br />
-                                    <span style={{ align: 'left', width: "40%" }}><br /><b>Net Amount</b></span>
-                                    <br />
-                                    <span style={{ align: 'right', width: "40%" }}><br /><FontAwesomeIcon icon={faRupeeSign} ></FontAwesomeIcon>&nbsp;
-                                    {this.state.newTotal}</span><br />
-                                </div>
-                                <div className="item-details" style={{ marginBottom: '20px', padding: '2%' }}>
-                                    <Button style={{ width: "100%" }} variant="contained" onClick={() => this.onPlaceOrderClickHandler()} color="primary">PLACE ORDER</Button>
-                                </div>
-
+                                <Button variant='contained' color='primary' onClick={this.checkoutClickHandler} fullWidth>Place Order</Button>
                             </CardContent>
                         </Card>
                     </div>
-                </div>
+                </div>               
                 <Snackbar
                     anchorOrigin={{
                         vertical: 'bottom',
                         horizontal: 'left',
                     }}
-                    open={this.state.snackOpen} message={this.state.snackMessage}
-                    action={[<IconButton
-                        key="close"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={() => this.handleClose()}
-                    >
-                        <CloseIcon />
-                    </IconButton>,
-                    ]}>
-
-                </Snackbar>
+                    open={this.state.showSnackbar}
+                    autoHideDuration={20000}
+                    onClose={this.handleClose}
+                    TransitionComponent={this.state.transition}
+                    message={this.state.snackBarMsg}
+                    action={                       
+                        <React.Fragment>
+                            <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleClose}>
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </React.Fragment>
+                    } />
             </div>
         );
-    };
+    }
 }
 
-export default Checkout;
+export default withStyles(styles)(Checkout);

@@ -1,128 +1,183 @@
-import React, { Component } from 'react';
 import './Home.css';
-import { constants } from '../../common/Apiurls';
-import Header from '../../common/header/Header';
+import { faRupeeSign, faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { withStyles } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRupeeSign } from '@fortawesome/free-solid-svg-icons';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import CardMedia from '@material-ui/core/CardMedia';
+import Grid from '@material-ui/core/Grid';
+import GridList from '@material-ui/core/GridList';
+import Header from '../../common/header/Header';
+import React, { Component } from "react";
+import 'typeface-roboto';
+import Typography from '@material-ui/core/Typography';
+
+
+/** 
+ * @param {*} theme
+ */
+const styles = theme => ({
+    /**rupees displayed in card */
+    rupees: {
+        fontSize: 'small',
+        marginRight: '6px',
+        whiteSpace: 'nowrap'
+    },
+    /**Grid*/
+    root: {
+        flexGrow: 1,
+    },
+    /**categories displayed on a card */
+    categories: {
+        marginTop: '16%',
+        fontSize: 'initial'
+    },
+    /**card text */
+    cardText: {
+        minHeight: '145px',
+        padding: '2%',
+        '@media(max-width:599px)': {
+            minHeight: 'auto'
+        }
+    },
+    /** card bottom section with margin and display flex */
+    ratingAndPrice: {
+        whiteSpace: 'nowrap',
+        margin: '10px',
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'space-between'
+    },
+    /**margin for the star icon */
+    faStarIcon: {
+        marginBottom: '1px'
+    },
+    /**rating box displayed in the card */
+    ratingBox: {
+        display: 'flex',
+        color: 'white',
+        fontSize: 'small',
+        whiteSpace: 'nowrap',
+        width: '100px',
+        padding: '10px 15px',
+        justifyContent: 'center',
+        backgroundColor: 'rgb(234, 204, 94)'
+    }
+})
 
 class Home extends Component {
-    constructor(props) {
-        super(props);
-        if (sessionStorage.getItem('access-token') == null) {
-            props.history.replace('/');
-        }
-
+    constructor() {
+        super();
         this.state = {
-            allrestaurantsData: [],
-            message: null
+            search: '',
+            dispMessage: 'dispNone',
+            restaurants: []
         }
+    }
 
-        this.getAllRestaurantData();
+    /*Redirect to details page based on the restaurant which is clicked*/
+    cardClickHandler = (restaurantId) => {
+        this.props.history.push("/restaurant/" + restaurantId);
+    }
+
+    /**Search the restaurant according to restaurant name typed where 'searchValue' */
+    searchBoxChangeHandler = (searchValue) => {
+        this.setState({ search: searchValue })        
+        if (searchValue !== '' && searchValue !== null) {
+            let that = this;
+            let xhrData = new XMLHttpRequest();
+            let restaurants = null;
+            xhrData.addEventListener("readystatechange", function () {                
+                if (this.readyState === 4 && this.status === 200) {                    
+                    that.setState({
+                        restaurants: JSON.parse(this.response).restaurants
+                    });                    
+                    if (that.state.restaurants !== null && that.state.restaurants.length === 0) {
+                        that.setState({ dispMessage: 'dispBlock' });
+                    } else {
+                        that.setState({ dispMessage: 'dispNone' });
+                    }
+                }
+            });            
+            xhrData.open("GET", this.props.baseUrl + '/restaurant/name/' + searchValue);
+            xhrData.send(restaurants);
+        } else {            
+            this.componentWillMount();
+        }
     }
 
     render() {
+        const { classes } = this.props;
+        let restaurantsData = this.state.restaurants;
         return (
             <div>
-                <Header
-                    searchHandler={this.getAllRestaurantData}
-                    screen={"Home"}
-                    history={this.props.history} />
-                <div className="card-details">
-                    {(this.state.allrestaurantsData !== null) && (this.state.allrestaurantsData !== undefined) ?
-                        (this.state.allrestaurantsData.map(restaurant => (
-
-                            <Card key={restaurant.id} style={{ align: 'left', width: "24%", cursor: "pointer", margin: "5px" }} onClick={() => this.restaurantClickHandler(restaurant.id)}>
-                                <CardContent>
-                                    <div>
-                                        <img
-                                            style={{ height: '150px', width: '100%', align: 'left' }}
-                                            src={restaurant.photo_URL} alt="restaurant_picture"></img>
+                <Header pageId='home' baseUrl={this.props.baseUrl} searchBoxChangeHandler={this.searchBoxChangeHandler} />
+                <div className='grid-container'>
+                    <GridList cellHeight={"auto"} spacing={20} >
+                        {restaurantsData !== [] && restaurantsData !== null && restaurantsData.map(restaurant => (
+                            <Grid container item key={restaurant.id} className={classes.root} xs={12}
+                                sm={6} md={4} lg={3} >
+                                <Card onClick={() => this.cardClickHandler(restaurant.id)}>
+                                    <CardActionArea>                                     
+                                        <CardMedia
+                                            component="img"
+                                            alt={restaurant.restaurant_name}
+                                            height="175"
+                                            image={restaurant.photo_URL}
+                                            title={restaurant.restaurant_name}
+                                        />
+                                        <CardContent>
+                                            <div className={classes.cardText} >
+                                                <Typography gutterBottom variant="h5" component="h2">
+                                                    {restaurant.restaurant_name}
+                                                </Typography>
+                                                <Typography variant="subtitle2" component="p" className={classes.categories}>
+                                                    {restaurant.categories}
+                                                </Typography>
                                             </div>
-                                            <div style={{padding: "5%"}}>
-                                        <div style={{ fontSize: "18px", paddingBottom:"6%" }}><b>{restaurant.restaurant_name}</b></div>
-                                        <div style={{ paddingBottom:"6%"}}>{restaurant.categories}</div>
-                                        <div className="card-details" >
-                                            <span style={{ padding: "10px", backgroundColor: "#EACC5E", align: "center", color: "white" }}>
-                                                <FontAwesomeIcon icon={faStar}></FontAwesomeIcon>&nbsp;&nbsp;{restaurant.customer_rating}&nbsp;&nbsp;({restaurant.number_customers_rated})
-                                        </span>
-                                            {/* {{ width: "45%", align: 'right' }} */}
-                                            <span style={{ paddingTop: "10px", paddingLeft: "15%" }}>
-                                                <FontAwesomeIcon icon={faRupeeSign}></FontAwesomeIcon> {restaurant.average_price} for two
-                                        </span>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))) : null
-
-                    }
+                                        </CardContent>
+                                        <CardActions className={classes.ratingAndPrice}>
+                                            <span className={classes.ratingBox}>
+                                                <FontAwesomeIcon icon={faStar} className='faStarIcon' /> &nbsp;
+                                                    <span> {restaurant.customer_rating}</span>&nbsp;({restaurant.number_customers_rated})
+                                                </span>
+                                            <Typography className={classes.rupees}>
+                                                <FontAwesomeIcon icon={faRupeeSign} />
+                                                {restaurant.average_price}
+                                                &nbsp;for two
+                                                </Typography>
+                                        </CardActions>
+                                    </CardActionArea>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </GridList>
+                    <div className={this.state.dispMessage}>
+                        <Typography>No restaurant with the given name.</Typography>
+                    </div>
                 </div>
-                <div>{this.state.message}</div>
-            </div >
+            </div>
         )
     }
 
-
-    /* This method is used to navigate to restaurant details page. */
-    restaurantClickHandler = (restuaurantId) => {
-        this.props.history.push('/restaurant/' + restuaurantId);
-    }
-
-    /* This method is used to get all the restaurant details based on the search value. */
-    getAllRestaurantData = (value) => {
-        if (value == null || value === "") {
-            let that = this;
-            let url = `${constants.allrestaurantsUrl}`;
-            return fetch(url, {
-                method: 'GET',
-            }).then((response) => {
-                return response.json();
-            }).then((jsonResponse) => {
-                console.log(jsonResponse.restaurants);
-                console.log(jsonResponse.restaurants.length);
-
-                if (jsonResponse.restaurants.length === 0) {
-                    this.setState({ message: "No restaurant found" })
-                }
-                if (jsonResponse.restaurants.length !== 0) {
-                    this.setState({ message: null })
-                }
+    componentWillMount() {
+        let that = this;
+        let xhrData = new XMLHttpRequest();
+        let restaurants = null;
+        xhrData.addEventListener("readystatechange", function () {           
+            if (this.readyState === 4 && this.status === 200) {               
                 that.setState({
-                    allrestaurantsData: jsonResponse.restaurants,
-                    message: null
+                    restaurants: JSON.parse(this.response).restaurants
                 });
-            }).catch((error) => {
-                console.log('error restaurant data', error);
-            });
-        }
-        else {
-            let that = this;
-            let url = `${constants.findRestaurant}/${value}`;
-            return fetch(url, {
-                method: 'GET',
-            }).then((response) => {
-                return response.json();
-            }).then((jsonResponse) => {
-                console.log(jsonResponse.restaurants);
-                console.log(jsonResponse.restaurants.length);
-                if (jsonResponse.restaurants.length === 0) {
-                    this.setState({ message: "No restaurant with the given name." })
-                }
-                if (jsonResponse.restaurants.length !== 0) {
-                    this.setState({ message: null })
-                }
-                that.setState({
-                    allrestaurantsData: jsonResponse.restaurants
-                });
-
-            }).catch((error) => {
-                console.log('error restaurant data', error);
-            });
-        }
+                that.setState({ dispMessage: 'dispNone' })
+            }
+        });
+        xhrData.open("GET", this.props.baseUrl + '/restaurant');
+        xhrData.send(restaurants);
     }
 
 }
-export default Home;
+
+export default withStyles(styles)(Home);

@@ -1,8 +1,21 @@
-.card-details {
-    display: flex;
-    justify-content: flex-start;
-    flex-wrap: wrap;
-}
-.MuiCardContent-root {
-    padding: 0px !important;
-}
+.dispNone {
+    display: none;
+  }
+  
+  /*margin for the grid container */
+  
+  .grid-container {
+    margin: 22px 50px;
+  }
+  
+  .dispBlock {
+    display: block;
+  }
+  
+  /*style based on screen width */
+  
+  @media(max-width: 600px) {  
+    .grid-container {
+      margin: 22px;
+    }
+  }
